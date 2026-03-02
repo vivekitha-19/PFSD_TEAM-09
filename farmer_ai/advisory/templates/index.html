@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer AI – Smart Advisory</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1 id="title">🌾 Farmer AI – Smart Advisory Tool</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Language -->
+        <label id="langLabel">Select Language</label>
+        <select id="language" name="language" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="te">తెలుగు</option>
+            <option value="hi">हिन्दी</option>
+        </select>
+
+        <!-- Crop -->
+        <label id="cropLabel">Select Crop</label>
+        <select id="crop" name="crop">
+            <option>Rice</option>
+            <option>Wheat</option>
+        </select>
+
+        <!-- Affected Part -->
+        <label id="partLabel">Select Affected Part</label>
+        <select id="part" name="part">
+            <option>Leaf</option>
+            <option>Stem</option>
+        </select>
+
+        <!-- Disease -->
+        <label id="diseaseLabel">Select Disease</label>
+        <select id="disease" name="disease">
+            <option>Leaf Spot</option>
+            <option>Rust</option>
+        </select>
+
+        <button type="button" onclick="getAdvisory()" id="btn">
+        🔍 Get Advisory
+        </button>
+    </form>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+const data = {
+    en: {
+        title: "🌾 Farmer AI – Smart Advisory Tool",
+        crops: ["Rice", "Wheat"],
+        parts: ["Leaf", "Stem"],
+        diseases: ["Leaf Spot", "Rust"],
+        advisory: {
+            "Leaf Spot": {
+                solution: "Apply recommended fungicide spray.",
+                prevention: "Ensure proper drainage and avoid overwatering.",
+                scheme: "PM-KISAN Scheme Support Available."
+            },
+            "Rust": {
+                solution: "Spray sulfur-based fungicide.",
+                prevention: "Use resistant varieties.",
+                scheme: "Crop Insurance Scheme Available."
+            }
+        }
+    },
+
+    te: {
+        title: "🌾 రైతు AI – స్మార్ట్ సలహా సాధనం",
+        crops: ["వరి", "గోధుమ"],
+        parts: ["ఆకు", "తాడు"],
+        diseases: ["ఆకు మచ్చ", "రస్ట్"],
+        advisory: {
+            "ఆకు మచ్చ": {
+                solution: "సూచించిన ఫంగిసైడ్ స్ప్రే చేయండి.",
+                prevention: "నీటి నిల్వ ఉండకుండా చూడండి.",
+                scheme: "పీఎం కిసాన్ పథకం అందుబాటులో ఉంది."
+            },
+            "రస్ట్": {
+                solution: "సల్ఫర్ స్ప్రే చేయండి.",
+                prevention: "రోగ నిరోధక విత్తనాలు వాడండి.",
+                scheme: "పంట బీమా పథకం అందుబాటులో ఉంది."
+            }
+        }
+    },
+
+    hi: {
+        title: "🌾 किसान AI – स्मार्ट सलाह उपकरण",
+        crops: ["धान", "गेहूं"],
+        parts: ["पत्ता", "तना"],
+        diseases: ["पत्ती धब्बा", "जंग"],
+        advisory: {
+            "पत्ती धब्बा": {
+                solution: "अनुशंसित फफूंदनाशक का छिड़काव करें।",
+                prevention: "जल निकासी सही रखें।",
+                scheme: "पीएम किसान योजना उपलब्ध है।"
+            },
+            "जंग": {
+                solution: "सल्फर स्प्रे करें।",
+                prevention: "रोग प्रतिरोधी बीज का उपयोग करें।",
+                scheme: "फसल बीमा योजना उपलब्ध है।"
+            }
+        }
+    }
+};
+
+function changeLanguage() {
+    const lang = document.getElementById("language").value;
+
+    // Change main title
+    document.getElementById("title").innerText = data[lang].title;
+
+    // Change field labels
+    const labels = {
+        en: {
+            lang: "Select Language",
+            crop: "Select Crop",
+            part: "Select Affected Part",
+            disease: "Select Disease",
+            button: "🔍 Get Advisory"
+        },
+        te: {
+            lang: "భాషను ఎంచుకోండి",
+            crop: "పంటను ఎంచుకోండి",
+            part: "ప్రభావిత భాగాన్ని ఎంచుకోండి",
+            disease: "రోగాన్ని ఎంచుకోండి",
+            button: "సలహా పొందండి"
+        },
+        hi: {
+            lang: "भाषा चुनें",
+            crop: "फसल चुनें",
+            part: "प्रभावित भाग चुनें",
+            disease: "रोग चुनें",
+            button: "सलाह प्राप्त करें"
+        }
+    };
+
+    document.getElementById("langLabel").innerText = labels[lang].lang;
+    document.getElementById("cropLabel").innerText = labels[lang].crop;
+    document.getElementById("partLabel").innerText = labels[lang].part;
+    document.getElementById("diseaseLabel").innerText = labels[lang].disease;
+    document.getElementById("btn").innerText = labels[lang].button;
+
+    // Update dropdown options
+    updateDropdown("crop", data[lang].crops);
+    updateDropdown("part", data[lang].parts);
+    updateDropdown("disease", data[lang].diseases);
+}
+
+
+function updateDropdown(id, values) {
+    const dropdown = document.getElementById(id);
+    dropdown.innerHTML = "";
+
+    values.forEach(value => {
+        const option = document.createElement("option");
+        option.text = value;
+        option.value = value;
+        dropdown.appendChild(option);
+    });
+}
+
+function getAdvisory() {
+    const lang = document.getElementById("language").value;
+    const disease = document.getElementById("disease").value;
+
+    const resultBox = document.getElementById("result");
+
+    const labels = {
+        en: {
+            title: "Advisory Result",
+            solution: "Solution",
+            prevention: "Prevention",
+            scheme: "Government Scheme"
+        },
+        te: {
+            title: "సలహా ఫలితం",
+            solution: "పరిష్కారం",
+            prevention: "నివారణ",
+            scheme: "ప్రభుత్వ పథకం"
+        },
+        hi: {
+            title: "सलाह परिणाम",
+            solution: "समाधान",
+            prevention: "रोकथाम",
+            scheme: "सरकारी योजना"
+        }
+    };
+
+    if (data[lang].advisory[disease]) {
+        const info = data[lang].advisory[disease];
+
+        resultBox.innerHTML = `
+            <h3>${labels[lang].title}</h3>
+            <p><strong>${labels[lang].solution}:</strong> ${info.solution}</p>
+            <p><strong>${labels[lang].prevention}:</strong> ${info.prevention}</p>
+            <p><strong>${labels[lang].scheme}:</strong> ${info.scheme}</p>
+        `;
+    } else {
+        resultBox.innerHTML = "No advisory available.";
+    }
+}
+
+window.onload = function() {
+    changeLanguage();
+};
+
+</script>
+
+
+
+</body>
+</html>
