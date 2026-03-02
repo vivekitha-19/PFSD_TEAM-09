@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer AI - Smart Advisory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="glass-card shadow-lg p-4">
+                <div class="d-flex justify-content-between mb-3 align-items-center">
+                    <span id="badgeText" class="badge bg-success px-3 py-2">Verified Rythu</span>
+                    <a href="/logout" class="btn btn-sm btn-outline-danger">Logout</a>
+                </div>
+
+                <div class="text-center mb-4">
+                    <h1 class="text-success fw-bold">🌾 Farmer AI</h1>
+                    <p id="greet" class="text-muted small">Welcome, {{ name }}!</p>
+                </div>
+
+                <form class="row g-3">
+                    <div class="col-12">
+                        <label id="lblLang" class="form-label">Preferred Language</label>
+                        <select id="language" class="form-select custom-input" onchange="updateUI()">
+                            <option value="en">English</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="hi">हिन्दी</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" id="lblCrop">Crop Name</label>
+                        <select id="crop" class="form-select custom-input"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" id="lblPart">Affected Part</label>
+                        <select id="part" class="form-select custom-input"></select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" id="lblDisease">Disease</label>
+                        <select id="disease" class="form-select custom-input"></select>
+                    </div>
+                    <button type="button" onclick="getAdvisory()" id="btnAdvisory" class="btn btn-success w-100 py-2 mt-3 fw-bold">🔍 Get Advisory</button>
+                </form>
+
+                <div id="resBox" class="mt-4 p-3 border-start border-success border-4 bg-light rounded" style="display:none;">
+                    <h5 class="text-success border-bottom pb-2">📋 Smart Advisory</h5>
+                    <div id="advisoryContent" class="mb-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="chat-toggle" id="chatBtn" onclick="toggleChat()">💬</div>
+<div class="chat-window" id="chatWin" style="display:none;">
+    <div class="chat-header bg-success text-white p-3 d-flex justify-content-between align-items-center">
+        <span class="fw-bold">🌾 Rythu Assistant</span>
+        <span onclick="toggleChat()" style="cursor:pointer; font-size: 20px;">&times;</span>
+    </div>
+    <div id="chatBody" class="p-3" style="height: 300px; overflow-y: auto; background: #f8f9fa;">
+        <div class="text-start mb-2 text-muted small" id="chatInitMsg">Ask me anything!</div>
+    </div>
+    <div class="p-2 border-top d-flex bg-white">
+        <input type="text" id="chatInput" class="form-control me-2" placeholder="Ask here...">
+        <button onclick="sendChat()" class="btn btn-success px-3">➤</button>
+    </div>
+</div>
+
+<script>
+    const advisoryData = {
+        "Leaf Spot": { en: "Apply Carbendazim spray.", te: "కార్బెండజిమ్ స్ప్రే చేయండి.", hi: "कार्बेन्डाजिम स्प्रे लगाएं।" },
+        "Rust": { en: "Use sulfur-based fungicides.", te: "సల్ఫర్ ఆధారిత శిలీంధ్ర నాశినులను వాడండి.", hi: "सल्फर आधारित कवकनाशी का प्रयोग करें।" }
+    };
+
+    function updateUI() {
+        const lang = document.getElementById('language').value;
+        const t = {
+            en: { welcome: "Welcome", badge: "Verified Rythu", lang: "Preferred Language", crop: "Crop Name", part: "Affected Part", disease: "Disease", btn: "🔍 Get Advisory", crops: ["Rice", "Wheat"], parts: ["Leaf", "Stem"], diseases: ["Leaf Spot", "Rust"] },
+            te: { welcome: "నమస్కారం", badge: "ధృవీకరించబడిన రైతు", lang: "భాషను ఎంచుకోండి", crop: "పంట పేరు", part: "ప్రభావిత భాగం", disease: "వ్యాధి", btn: "🔍 సలహా పొందండి", crops: ["వరి", "గోధుమ"], parts: ["ఆకు", "కాండం"], diseases: ["ఆకు మచ్చ", "రస్ట్"] },
+            hi: { welcome: "नमस्ते", badge: "सत्यापित किसान", lang: "पसंद की भाषा", crop: "फसल का नाम", part: "प्रभावित हिस्सा", disease: "बीमारी", btn: "🔍 सलाह प्राप्त करें", crops: ["धान", "गेहूं"], parts: ["पत्ती", "तना"], diseases: ["पत्ती धब्बा", "जंग"] }
+        }[lang];
+
+        document.getElementById('greet').innerText = `${t.welcome}, {{ name }}!`;
+        document.getElementById('badgeText').innerText = t.badge;
+        document.getElementById('lblLang').innerText = t.lang;
+        document.getElementById('lblCrop').innerText = t.crop;
+        document.getElementById('lblPart').innerText = t.part;
+        document.getElementById('lblDisease').innerText = t.disease;
+        document.getElementById('btnAdvisory').innerText = t.btn;
+
+        fillOptions('crop', t.crops);
+        fillOptions('part', t.parts);
+        fillOptions('disease', t.diseases);
+    }
+
+    function fillOptions(id, arr) {
+        const s = document.getElementById(id); s.innerHTML = "";
+        arr.forEach(opt => { let o = document.createElement("option"); o.value = opt; o.text = opt; s.appendChild(o); });
+    }
+
+    function getAdvisory() {
+        const d = document.getElementById('disease').value;
+        const l = document.getElementById('language').value;
+        let key = d;
+        if(d === "ఆకు మచ్చ" || d === "पत्ती धब्बा") key = "Leaf Spot";
+        if(d === "రస్ట్" || d === "जंग") key = "Rust";
+
+        if (advisoryData[key]) {
+            document.getElementById('resBox').style.display = "block";
+            document.getElementById('advisoryContent').innerText = advisoryData[key][l];
+        }
+    }
+
+    function toggleChat() {
+        const win = document.getElementById('chatWin');
+        win.style.display = (win.style.display === "none") ? "block" : "none";
+    }
+
+    function sendChat() {
+        const input = document.getElementById('chatInput');
+        const body = document.getElementById('chatBody');
+        const lang = document.getElementById('language').value;
+        const msg = input.value.trim().toLowerCase();
+        if (!msg) return;
+
+        body.innerHTML += `<div class="text-end mb-2"><span class="bg-success text-white p-2 rounded d-inline-block">${input.value}</span></div>`;
+        input.value = "";
+
+        let reply = (lang === "te") ? "క్షమించండి, నాకు అర్థం కాలేదు." : (lang === "hi") ? "क्षमा करें, मुझे समझ नहीं आया।" : "I'm sorry, I don't understand.";
+        if (msg.includes("pest") || msg.includes("purugu") || msg.includes("keeda")) {
+            reply = (lang === "te") ? "వేప నూనె వాడండి." : (lang === "hi") ? "नीम तेल का उपयोग करें।" : "Use Neem Oil.";
+        }
+
+        setTimeout(() => {
+            body.innerHTML += `<div class="text-start mb-2"><span class="bg-light p-2 border rounded d-inline-block"><b>Bot:</b> ${reply}</span></div>`;
+            body.scrollTop = body.scrollHeight;
+        }, 500);
+    }
+
+    window.onload = updateUI;
+</script>
+</body>
+</html>

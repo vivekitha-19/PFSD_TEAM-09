@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Farmer AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="glass-card shadow-lg p-5">
+        <h2 class="text-success fw-bold">Login</h2>
+        <form action="/login" method="POST">
+            <input type="email" name="email" class="form-control custom-input" placeholder="Email" required>
+            <input type="password" name="password" class="form-control custom-input" placeholder="Password" required>
+            <button type="submit" class="btn btn-success w-100 py-2 fw-bold mt-2">🔑 Login</button>
+        </form>
+        <p class="mt-3 small">New? <a href="/register">Create Account</a></p>
+    </div>
+</body>
+</html>

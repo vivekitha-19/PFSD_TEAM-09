@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; margin: 0;
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    font-family: 'Poppins', sans-serif;
+}
+.glass-card {
+    background: white; border-radius: 25px; padding: 35px;
+    width: 100%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+.custom-input { border-radius: 12px !important; margin-bottom: 15px; }
+.btn-success { background-color: #2d6a4f !important; border: none; border-radius: 12px; }
+
+/* Chatbot UI */
+.chat-toggle {
+    position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+    background: #1b4332; color: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+.chat-window {
+    position: fixed; bottom: 100px; right: 30px; width: 320px;
+    background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden; border: 1px solid #ddd;
+}
