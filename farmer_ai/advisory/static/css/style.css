@@ -1,56 +1,91 @@
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to right, #d4fc79, #96e6a1);
-    margin: 0;
-    padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(135deg,#11998e,#38ef7d);
+    font-family:'Poppins',sans-serif;
 }
 
-.container {
-    width: 60%;
-    margin: 50px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+/* Main Card */
+.glass-card{
+    background:white;
+    border-radius:25px;
+    padding:35px;
+    width:100%;
+    max-width:500px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
 }
 
-h1 {
-    text-align: center;
-    color: #2e7d32;
+/* Inputs */
+.custom-input{
+    border-radius:12px !important;
+    margin-bottom:15px;
 }
 
-label {
-    font-weight: bold;
-    display: block;
-    margin-top: 15px;
+/* Button */
+.btn-success{
+    background-color:#2d6a4f !important;
+    border:none;
+    border-radius:12px;
 }
 
-select, button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+/* ================= CHATBOT ================= */
+
+/* Floating chatbot button */
+.chat-toggle{
+    position:fixed !important;
+    bottom:30px;
+    right:30px;
+    width:70px;
+    height:70px;
+    background:#2d6a4f;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:32px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.35);
+    z-index:99999;
+    transition:all 0.3s ease;
 }
 
-button {
-    background-color: #2e7d32;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
+.chat-toggle:hover{
+    transform:scale(1.1);
+    background:#1b4332;
 }
 
-button:hover {
-    background-color: #1b5e20;
+/* Chat window */
+.chat-window{
+    position:fixed !important;
+    bottom:110px;
+    right:30px;
+    width:340px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 10px 35px rgba(0,0,0,0.25);
+    overflow:hidden;
+    border:1px solid #ddd;
+    z-index:99999;
 }
 
-.card {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 12px;
-    background: #eaf4e4;
-    border-left: 6px solid #2e7d32;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+/* Chat header */
+.chat-header{
+    background:#2d6a4f;
+    color:white;
+    font-weight:600;
 }
 
+/* Chat body */
+#chatBody{
+    height:300px;
+    overflow-y:auto;
+    background:#f8f9fa;
+}
+
+/* Chat input */
+#chatInput{
+    border-radius:10px;
+}

@@ -1,221 +1,325 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Farmer AI – Smart Advisory</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Farmer AI - Smart Advisory</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 </head>
+
 <body>
 
-<div class="container">
-    <h1 id="title">🌾 Farmer AI – Smart Advisory Tool</h1>
+<div class="container py-5">
 
-    <form method="POST">
-        {% csrf_token %}
+<div class="row justify-content-center">
 
-        <!-- Language -->
-        <label id="langLabel">Select Language</label>
-        <select id="language" name="language" onchange="changeLanguage()">
-            <option value="en">English</option>
-            <option value="te">తెలుగు</option>
-            <option value="hi">हिन्दी</option>
-        </select>
+<div class="col-md-8 col-lg-6">
 
-        <!-- Crop -->
-        <label id="cropLabel">Select Crop</label>
-        <select id="crop" name="crop">
-            <option>Rice</option>
-            <option>Wheat</option>
-        </select>
+<div class="glass-card shadow-lg p-4">
 
-        <!-- Affected Part -->
-        <label id="partLabel">Select Affected Part</label>
-        <select id="part" name="part">
-            <option>Leaf</option>
-            <option>Stem</option>
-        </select>
+<div class="d-flex justify-content-between mb-3 align-items-center">
 
-        <!-- Disease -->
-        <label id="diseaseLabel">Select Disease</label>
-        <select id="disease" name="disease">
-            <option>Leaf Spot</option>
-            <option>Rust</option>
-        </select>
+<span id="badgeText" class="badge bg-success px-3 py-2">
+Verified Rythu
+</span>
 
-        <button type="button" onclick="getAdvisory()" id="btn">
-        🔍 Get Advisory
-        </button>
-    </form>
+<a href="/logout/" class="btn btn-sm btn-outline-danger">
+Logout
+</a>
 
-    <div id="result"></div>
+</div>
+
+<div class="text-center mb-4">
+
+<h1 class="text-success fw-bold">🌾 Farmer AI</h1>
+
+<p id="greet" class="text-muted small">
+Welcome, {{ name|default:"Farmer" }}!
+</p>
+
+</div>
+
+<form class="row g-3">
+
+<div class="col-12">
+
+<label id="lblLang" class="form-label">Preferred Language</label>
+
+<select id="language" class="form-select custom-input" onchange="updateUI()">
+
+<option value="en">English</option>
+<option value="te">తెలుగు</option>
+<option value="hi">हिन्दी</option>
+
+</select>
+
+</div>
+
+<div class="col-md-6">
+
+<label class="form-label" id="lblCrop">Crop Name</label>
+
+<select id="crop" class="form-select custom-input"></select>
+
+</div>
+
+<div class="col-md-6">
+
+<label class="form-label" id="lblPart">Affected Part</label>
+
+<select id="part" class="form-select custom-input"></select>
+
+</div>
+
+<div class="col-12">
+
+<label class="form-label" id="lblDisease">Disease</label>
+
+<select id="disease" class="form-select custom-input"></select>
+
+</div>
+
+<button type="button"
+onclick="getAdvisory()"
+id="btnAdvisory"
+class="btn btn-success w-100 py-2 mt-3 fw-bold">
+
+🔍 Get Advisory
+
+</button>
+
+</form>
+
+<div id="resBox"
+class="mt-4 p-3 border-start border-success border-4 bg-light rounded"
+style="display:none;">
+
+<h5 class="text-success border-bottom pb-2">
+📋 Smart Advisory
+</h5>
+
+<div id="advisoryContent" class="mb-3"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Chatbot Button -->
+
+<div class="chat-toggle" onclick="toggleChat()">💬</div>
+
+<!-- Chat Window -->
+
+<div class="chat-window" id="chatWin" style="display:none;">
+
+<div class="chat-header text-white p-3 d-flex justify-content-between">
+
+<span>🌾 Rythu Assistant</span>
+
+<span onclick="toggleChat()" style="cursor:pointer;">×</span>
+
+</div>
+
+<div id="chatBody" class="p-3">
+
+<div class="text-muted small">
+Ask me anything!
+</div>
+
+</div>
+
+<div class="p-2 border-top d-flex">
+
+<input type="text"
+id="chatInput"
+class="form-control me-2"
+placeholder="Ask here...">
+
+<button onclick="sendChat()" class="btn btn-success">
+➤
+</button>
+
+</div>
 
 </div>
 
 <script>
 
-const data = {
-    en: {
-        title: "🌾 Farmer AI – Smart Advisory Tool",
-        crops: ["Rice", "Wheat"],
-        parts: ["Leaf", "Stem"],
-        diseases: ["Leaf Spot", "Rust"],
-        advisory: {
-            "Leaf Spot": {
-                solution: "Apply recommended fungicide spray.",
-                prevention: "Ensure proper drainage and avoid overwatering.",
-                scheme: "PM-KISAN Scheme Support Available."
-            },
-            "Rust": {
-                solution: "Spray sulfur-based fungicide.",
-                prevention: "Use resistant varieties.",
-                scheme: "Crop Insurance Scheme Available."
-            }
-        }
-    },
+const advisoryData = {
 
-    te: {
-        title: "🌾 రైతు AI – స్మార్ట్ సలహా సాధనం",
-        crops: ["వరి", "గోధుమ"],
-        parts: ["ఆకు", "తాడు"],
-        diseases: ["ఆకు మచ్చ", "రస్ట్"],
-        advisory: {
-            "ఆకు మచ్చ": {
-                solution: "సూచించిన ఫంగిసైడ్ స్ప్రే చేయండి.",
-                prevention: "నీటి నిల్వ ఉండకుండా చూడండి.",
-                scheme: "పీఎం కిసాన్ పథకం అందుబాటులో ఉంది."
-            },
-            "రస్ట్": {
-                solution: "సల్ఫర్ స్ప్రే చేయండి.",
-                prevention: "రోగ నిరోధక విత్తనాలు వాడండి.",
-                scheme: "పంట బీమా పథకం అందుబాటులో ఉంది."
-            }
-        }
-    },
+"Leaf Spot": {
+en:"Apply Carbendazim spray.",
+te:"కార్బెండజిమ్ స్ప్రే చేయండి.",
+hi:"कार्बेन्डाजिम स्प्रे लगाएं।"
+},
 
-    hi: {
-        title: "🌾 किसान AI – स्मार्ट सलाह उपकरण",
-        crops: ["धान", "गेहूं"],
-        parts: ["पत्ता", "तना"],
-        diseases: ["पत्ती धब्बा", "जंग"],
-        advisory: {
-            "पत्ती धब्बा": {
-                solution: "अनुशंसित फफूंदनाशक का छिड़काव करें।",
-                prevention: "जल निकासी सही रखें।",
-                scheme: "पीएम किसान योजना उपलब्ध है।"
-            },
-            "जंग": {
-                solution: "सल्फर स्प्रे करें।",
-                prevention: "रोग प्रतिरोधी बीज का उपयोग करें।",
-                scheme: "फसल बीमा योजना उपलब्ध है।"
-            }
-        }
-    }
+"Rust": {
+en:"Use sulfur-based fungicides.",
+te:"సల్ఫర్ ఆధారిత శిలీంధ్ర నాశినులను వాడండి.",
+hi:"सल्फर आधारित कवकनाशी का प्रयोग करें।"
+}
+
 };
 
-function changeLanguage() {
-    const lang = document.getElementById("language").value;
+function updateUI(){
 
-    // Change main title
-    document.getElementById("title").innerText = data[lang].title;
+const lang=document.getElementById("language").value;
 
-    // Change field labels
-    const labels = {
-        en: {
-            lang: "Select Language",
-            crop: "Select Crop",
-            part: "Select Affected Part",
-            disease: "Select Disease",
-            button: "🔍 Get Advisory"
-        },
-        te: {
-            lang: "భాషను ఎంచుకోండి",
-            crop: "పంటను ఎంచుకోండి",
-            part: "ప్రభావిత భాగాన్ని ఎంచుకోండి",
-            disease: "రోగాన్ని ఎంచుకోండి",
-            button: "సలహా పొందండి"
-        },
-        hi: {
-            lang: "भाषा चुनें",
-            crop: "फसल चुनें",
-            part: "प्रभावित भाग चुनें",
-            disease: "रोग चुनें",
-            button: "सलाह प्राप्त करें"
-        }
-    };
+const t={
 
-    document.getElementById("langLabel").innerText = labels[lang].lang;
-    document.getElementById("cropLabel").innerText = labels[lang].crop;
-    document.getElementById("partLabel").innerText = labels[lang].part;
-    document.getElementById("diseaseLabel").innerText = labels[lang].disease;
-    document.getElementById("btn").innerText = labels[lang].button;
+en:{
+badge:"Verified Rythu",
+crop:["Rice","Wheat"],
+part:["Leaf","Stem"],
+disease:["Leaf Spot","Rust"]
+},
 
-    // Update dropdown options
-    updateDropdown("crop", data[lang].crops);
-    updateDropdown("part", data[lang].parts);
-    updateDropdown("disease", data[lang].diseases);
+te:{
+badge:"ధృవీకరించబడిన రైతు",
+crop:["వరి","గోధుమ"],
+part:["ఆకు","కాండం"],
+disease:["ఆకు మచ్చ","రస్ట్"]
+},
+
+hi:{
+badge:"सत्यापित किसान",
+crop:["धान","गेहूं"],
+part:["पत्ती","तना"],
+disease:["पत्ती धब्बा","जंग"]
 }
 
+}[lang];
 
-function updateDropdown(id, values) {
-    const dropdown = document.getElementById(id);
-    dropdown.innerHTML = "";
+document.getElementById("badgeText").innerText=t.badge;
 
-    values.forEach(value => {
-        const option = document.createElement("option");
-        option.text = value;
-        option.value = value;
-        dropdown.appendChild(option);
-    });
+fillOptions("crop",t.crop);
+fillOptions("part",t.part);
+fillOptions("disease",t.disease);
+
 }
 
-function getAdvisory() {
-    const lang = document.getElementById("language").value;
-    const disease = document.getElementById("disease").value;
+function fillOptions(id,arr){
 
-    const resultBox = document.getElementById("result");
+const s=document.getElementById(id);
 
-    const labels = {
-        en: {
-            title: "Advisory Result",
-            solution: "Solution",
-            prevention: "Prevention",
-            scheme: "Government Scheme"
-        },
-        te: {
-            title: "సలహా ఫలితం",
-            solution: "పరిష్కారం",
-            prevention: "నివారణ",
-            scheme: "ప్రభుత్వ పథకం"
-        },
-        hi: {
-            title: "सलाह परिणाम",
-            solution: "समाधान",
-            prevention: "रोकथाम",
-            scheme: "सरकारी योजना"
-        }
-    };
+s.innerHTML="";
 
-    if (data[lang].advisory[disease]) {
-        const info = data[lang].advisory[disease];
+arr.forEach(v=>{
 
-        resultBox.innerHTML = `
-            <h3>${labels[lang].title}</h3>
-            <p><strong>${labels[lang].solution}:</strong> ${info.solution}</p>
-            <p><strong>${labels[lang].prevention}:</strong> ${info.prevention}</p>
-            <p><strong>${labels[lang].scheme}:</strong> ${info.scheme}</p>
-        `;
-    } else {
-        resultBox.innerHTML = "No advisory available.";
-    }
+let o=document.createElement("option");
+
+o.value=v;
+o.text=v;
+
+s.appendChild(o);
+
+});
+
 }
 
-window.onload = function() {
-    changeLanguage();
-};
+function getAdvisory(){
+
+const d=document.getElementById("disease").value;
+const l=document.getElementById("language").value;
+
+let key=d;
+
+if(d==="ఆకు మచ్చ"||d==="पत्ती धब्बा") key="Leaf Spot";
+if(d==="రస్ట్"||d==="जंग") key="Rust";
+
+if(advisoryData[key]){
+
+document.getElementById("resBox").style.display="block";
+document.getElementById("advisoryContent").innerText=advisoryData[key][l];
+
+}
+
+}
+
+function toggleChat(){
+
+const win=document.getElementById("chatWin");
+
+win.style.display=(win.style.display==="none")?"block":"none";
+
+}
+
+function sendChat(){
+
+const input=document.getElementById("chatInput");
+const body=document.getElementById("chatBody");
+const lang=document.getElementById("language").value;
+const msg=input.value.trim().toLowerCase();
+
+if(!msg) return;
+
+body.innerHTML+=`
+<div class="text-end mb-2">
+<span class="bg-success text-white p-2 rounded d-inline-block">
+${input.value}
+</span>
+</div>`;
+
+input.value="";
+
+let reply="";
+
+if(msg.includes("pest")||msg.includes("purugu")||msg.includes("keeda")){
+
+if(lang==="te")
+reply="పురుగుల నియంత్రణ కోసం వేప నూనె స్ప్రే చేయండి.";
+
+else if(lang==="hi")
+reply="कीट नियंत्रण के लिए नीम तेल का छिड़काव करें।";
+
+else
+reply="Use Neem Oil spray for pest control.";
+
+}
+
+else{
+
+if(lang==="te")
+reply="క్షమించండి, మీ ప్రశ్న అర్థం కాలేదు.";
+
+else if(lang==="hi")
+reply="क्षमा करें, आपका प्रश्न समझ में नहीं आया।";
+
+else
+reply="Sorry, I did not understand your question.";
+
+}
+
+setTimeout(()=>{
+
+body.innerHTML+=`
+<div class="text-start mb-2">
+<span class="bg-light border p-2 rounded d-inline-block">
+<b>Bot:</b> ${reply}
+</span>
+</div>`;
+
+body.scrollTop=body.scrollHeight;
+
+},500);
+
+}
+
+window.onload=updateUI;
 
 </script>
-
-
 
 </body>
 </html>
