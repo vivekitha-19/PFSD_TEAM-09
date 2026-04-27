@@ -57,7 +57,7 @@ DATABASES = {
 
 # ── MongoDB Atlas ──────────────────────────────────────────────────────────────
 MONGODB_URI    = os.environ.get('MONGODB_URI',
-    'mongodb+srv://2410030267_db_user:Kundanika$16@cluster0.do1lgqc.mongodb.net/?appName=Cluster0')
+    '')
 MONGODB_DB_NAME = os.environ.get('MONGODB_DB_NAME', 'farmer_advisory_db')
 
 # ── AI Keys ────────────────────────────────────────────────────────────────────
