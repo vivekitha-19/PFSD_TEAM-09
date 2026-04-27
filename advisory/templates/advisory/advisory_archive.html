@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisory Archive — FarmAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#16a34a;--primary-dark:#15803d;--primary-light:#bbf7d0;--bg:#f0fdf4;--card:#fff;--border:#d1fae5;--text:#1a2e1a;--muted:#6b7280;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
+.topbar{background:linear-gradient(90deg,#14532d,#166534);color:#fff;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;}
+.topbar h1{font-size:1.1rem;font-weight:700;}
+.back-btn{background:rgba(255,255,255,0.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:600;text-decoration:none;font-family:inherit;}
+.back-btn:hover{background:rgba(255,255,255,0.25);}
+.container{max-width:1100px;margin:0 auto;padding:28px 24px;}
+.page-header{margin-bottom:24px;}
+.page-header h2{font-size:1.4rem;font-weight:800;color:var(--primary-dark);}
+.page-header p{font-size:0.82rem;color:var(--muted);margin-top:4px;}
+.stats-bar{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.stat-pill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:0.8rem;font-weight:600;color:var(--primary-dark);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;}
+.adv-card{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 12px rgba(22,163,74,.06);}
+.adv-card-head{padding:14px 18px;background:linear-gradient(90deg,#f0fdf4,#dcfce7);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.adv-card-head .stress-icon{font-size:1.3rem;}
+.adv-card-head h3{font-size:0.92rem;font-weight:700;color:var(--primary-dark);}
+.adv-card-head .sev{margin-left:auto;font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:10px;}
+.sev-high{background:#fee2e2;color:#991b1b}
+.sev-vhigh{background:#fecaca;color:#7f1d1d}
+.sev-medium{background:#fef3c7;color:#92400e}
+.sev-none{background:#dcfce7;color:#166534}
+.adv-card-body{padding:14px 18px;}
+.immediate{background:#fef3c7;border-left:3px solid #f59e0b;padding:9px 12px;border-radius:6px;font-size:0.79rem;font-weight:600;color:#92400e;margin-bottom:12px;}
+.section-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.items-list{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.items-list li{font-size:0.78rem;color:var(--text);display:flex;gap:7px;line-height:1.4;}
+.items-list li::before{content:'•';color:var(--primary);font-weight:700;flex-shrink:0;}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.pill{background:#dbeafe;color:#1e40af;font-size:0.68rem;font-weight:600;padding:3px 9px;border-radius:12px;}
+.followup{background:#f0fdf4;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:0.74rem;color:var(--primary-dark);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>🌾 FarmAI — Advisory Archive</h1>
+  <a href="/" class="back-btn">← Back to Dashboard</a>
+</div>
+<div class="container">
+  <div class="page-header">
+    <h2>📋 Advisory Database</h2>
+    <p>Complete crop stress treatment and prevention guidelines stored in MongoDB</p>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-pill">📊 Total Records: {{ total }}</div>
+    <div class="stat-pill">🌿 Crops Covered: {{ crops|length }}</div>
+    <div class="stat-pill">🗄️ Source: MongoDB — advisory_data collection</div>
+  </div>
+  <div class="grid">
+    {% for adv in advisories %}
+    {% with st=adv.stress_type %}
+    <div class="adv-card">
+      <div class="adv-card-head">
+        <span class="stress-icon">
+          {% if st == 'FUNGAL_DISEASE' %}🍄
+          {% elif st == 'WATER_STRESS' %}💧
+          {% elif st == 'PEST_INFESTATION' %}🐛
+          {% elif st == 'VIRAL_DISEASE' %}🦠
+          {% elif st == 'BACTERIAL_DISEASE' %}🧫
+          {% elif st == 'HEAT_STRESS' %}🌡️
+          {% elif st == 'WEED_INFESTATION' %}🌱
+          {% else %}🌿{% endif %}
+        </span>
+        <h3>{{ adv.title }}</h3>
+        <span class="sev {% if adv.severity_level == 'High' %}sev-high{% elif adv.severity_level == 'Very High' %}sev-vhigh{% elif adv.severity_level == 'Medium' %}sev-medium{% else %}sev-none{% endif %}">
+          {{ adv.severity_level }}
+        </span>
+      </div>
+      <div class="adv-card-body">
+        <div class="immediate">⚡ {{ adv.immediate_action }}</div>
+        <div class="section-label">Treatment Steps</div>
+        <ul class="items-list">
+          {% for t in adv.treatment %}<li>{{ t }}</li>{% endfor %}
+        </ul>
+        <div class="section-label">Prevention</div>
+        <ul class="items-list">
+          {% for p in adv.prevention %}<li>{{ p }}</li>{% endfor %}
+        </ul>
+        <div class="section-label">Recommended Products</div>
+        <div class="pills">
+          {% for f in adv.fertilizers %}<span class="pill">🧪 {{ f }}</span>{% endfor %}
+        </div>
+        <div class="followup">📌 {{ adv.follow_up }}</div>
+      </div>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <p style="color:var(--muted);padding:20px">No advisory records found in database.</p>
+    {% endfor %}
+  </div>
+</div>
+</body>
+</html>

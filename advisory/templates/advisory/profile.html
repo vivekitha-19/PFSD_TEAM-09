@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile – FarmAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --green:#16a34a;--green-d:#14532d;--green-l:#bbf7d0;--green-xl:#dcfce7;
+      --amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--red:#ef4444;--teal:#06b6d4;
+      --bg:#f0fdf4;--card:#fff;--border:#d1fae5;--text:#1a2e1a;--muted:#6b7280;--radius:14px;
+      --shadow:0 4px 24px rgba(22,163,74,.09);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+    .topnav{background:linear-gradient(135deg,#052e16,#14532d 40%,#166534 70%,#16a34a);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,.22);position:sticky;top:0;z-index:100}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-brand .logo-circle{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid rgba(255,255,255,0.25)}
+    .nav-brand span{font-size:1.18rem;color:#fff;font-weight:800;letter-spacing:-0.4px}
+    .nav-back{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);padding:0.38rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:inherit}
+    .nav-back:hover{background:rgba(255,255,255,0.28)}
+
+    .page{max-width:1000px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+    .profile-hero{background:linear-gradient(135deg,#052e16,#14532d 50%,#166534);border-radius:22px;padding:2rem 2.2rem;display:flex;align-items:center;gap:1.8rem;margin-bottom:1.5rem;box-shadow:0 8px 36px rgba(22,163,74,0.28);position:relative;overflow:hidden}
+    .profile-hero::before{content:'🌾';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:7rem;opacity:0.07}
+    .avatar-ring{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:2rem;color:#052e16;font-weight:800;box-shadow:0 0 0 4px rgba(255,255,255,0.2),0 8px 24px rgba(0,0,0,0.3)}
+    .profile-info h2{font-size:1.7rem;font-weight:800;color:#fff;letter-spacing:-0.3px}
+    .profile-info .email{font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.2rem}
+    .profile-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.8rem}
+    .tag{font-size:0.72rem;font-weight:700;padding:0.28rem 0.75rem;border-radius:20px;border:1px solid}
+    .tag-green{background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)}
+    .tag-amber{background:rgba(245,158,11,0.15);color:#fbbf24;border-color:rgba(245,158,11,0.3)}
+    .tag-blue{background:rgba(59,130,246,0.15);color:#93c5fd;border-color:rgba(59,130,246,0.3)}
+
+    .details-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:1.5rem}
+    @media(max-width:580px){.details-grid{grid-template-columns:1fr}}
+    .detail-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;box-shadow:var(--shadow);transition:transform 0.15s}
+    .detail-card:hover{transform:translateY(-2px)}
+    .dc-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.3rem}
+    .dc-value{font-size:0.95rem;font-weight:700;color:var(--text)}
+
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.9rem;margin-bottom:1.5rem}
+    @media(max-width:640px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+    .stat-card{border-radius:var(--radius);padding:1.2rem;text-align:center;box-shadow:var(--shadow);border:1px solid transparent;transition:transform 0.15s}
+    .stat-card:hover{transform:translateY(-3px)}
+    .stat-card.c1{background:linear-gradient(135deg,#dcfce7,#f0fdf4);border-color:#6ee7b7}
+    .stat-card.c2{background:linear-gradient(135deg,#fef3c7,#fffbeb);border-color:#fcd34d}
+    .stat-card.c3{background:linear-gradient(135deg,#dbeafe,#eff6ff);border-color:#93c5fd}
+    .stat-card.c4{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border-color:#c4b5fd}
+    .stat-ico{font-size:1.6rem;margin-bottom:0.3rem}
+    .stat-num{font-size:2rem;font-weight:800;line-height:1}
+    .stat-card.c1 .stat-num{color:#15803d}.stat-card.c2 .stat-num{color:#92400e}
+    .stat-card.c3 .stat-num{color:#1d4ed8}.stat-card.c4 .stat-num{color:#6d28d9}
+    .stat-lbl{font-size:0.71rem;color:var(--muted);font-weight:600;margin-top:0.2rem}
+
+    .sec-title{font-size:0.97rem;font-weight:800;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:0.55rem}
+    .sec-title::before{content:'';display:inline-block;width:4px;height:20px;border-radius:4px}
+    .sec-title.green::before{background:linear-gradient(180deg,#16a34a,#059669)}
+    .sec-title.amber::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
+    .sec-title.blue::before{background:linear-gradient(180deg,#3b82f6,#2563eb)}
+    .sec-title.purple::before{background:linear-gradient(180deg,#8b5cf6,#7c3aed)}
+
+    .mongo-badge{display:none}
+    @keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+
+    .chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.2rem}
+    @media(max-width:720px){.chart-grid-2{grid-template-columns:1fr}}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem;box-shadow:var(--shadow);transition:transform 0.15s}
+    .chart-card:hover{transform:translateY(-2px)}
+    .chart-title{font-size:0.82rem;font-weight:800;color:var(--green-d);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+    .chart-wrap{position:relative;height:200px}
+    .chart-wrap-sm{position:relative;height:180px}
+    .chart-wrap-tall{position:relative;height:220px}
+    .chart-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:0.8rem;font-style:italic}
+
+    /* Colorful stress bars */
+    .stress-chart{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem;margin-bottom:1.2rem;box-shadow:var(--shadow)}
+    .stress-bar-row{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem}
+    .stress-label{width:200px;font-size:0.77rem;font-weight:700;color:var(--text);flex-shrink:0;text-transform:capitalize}
+    .stress-track{flex:1;height:14px;background:#f0fdf4;border-radius:10px;overflow:hidden;border:1px solid #dcfce7}
+    .stress-fill{height:100%;border-radius:10px;transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1)}
+    .sf0{background:linear-gradient(90deg,#16a34a,#4ade80)}
+    .sf1{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+    .sf2{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+    .sf3{background:linear-gradient(90deg,#ef4444,#f87171)}
+    .sf4{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+    .sf5{background:linear-gradient(90deg,#06b6d4,#22d3ee)}
+    .stress-count{width:32px;text-align:right;font-size:0.8rem;font-weight:800;color:var(--green)}
+
+    /* Confidence buckets */
+    .conf-buckets{display:grid;grid-template-columns:repeat(5,1fr);gap:0.7rem;margin-bottom:1.2rem}
+    .conf-bucket{border-radius:12px;padding:0.9rem;text-align:center;border:1px solid}
+    .cb0{background:#fee2e2;border-color:#fca5a5}.cb0 .cb-num{color:#dc2626}
+    .cb1{background:#ffedd5;border-color:#fdba74}.cb1 .cb-num{color:#ea580c}
+    .cb2{background:#fef9c3;border-color:#fde047}.cb2 .cb-num{color:#ca8a04}
+    .cb3{background:#dcfce7;border-color:#86efac}.cb3 .cb-num{color:#16a34a}
+    .cb4{background:#d1fae5;border-color:#6ee7b7}.cb4 .cb-num{color:#059669}
+    .cb-range{font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px}
+    .cb-num{font-size:1.6rem;font-weight:800;line-height:1;margin:0.3rem 0}
+    .cb-lbl{font-size:0.62rem;color:var(--muted);font-weight:500}
+
+    /* Query cards — ALL visible, no dropdown */
+    .query-list{display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1.5rem}
+    .query-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.2rem;box-shadow:var(--shadow);transition:border-color 0.2s,transform 0.15s}
+    .query-card:hover{border-color:#6ee7b7;transform:translateY(-1px)}
+    .qc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;margin-bottom:0.5rem}
+    .qc-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;font-size:0.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+    .qc-text{flex:1;font-size:0.88rem;font-weight:700;color:var(--text);line-height:1.4}
+    .qc-date{font-size:0.7rem;color:var(--muted);flex-shrink:0;white-space:nowrap}
+    .qc-translated{font-size:0.78rem;color:var(--muted);font-style:italic;margin-bottom:0.5rem;padding:0.4rem 0.7rem;background:#f9fffe;border-radius:6px;border-left:3px solid #bbf7d0}
+    .qc-meta{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.4rem}
+    .badge{font-size:0.68rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:10px;border:1px solid}
+    .badge-stress{background:#dcfce7;color:#15803d;border-color:#6ee7b7}
+    .badge-crop{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+    .badge-lang{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+    .badge-ch{background:#dcfce7;color:#15803d;border-color:#6ee7b7}
+    .badge-cm{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+    .badge-cl{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+    .conf-bar-wrap{margin-top:0.4rem}
+    .conf-bar-label{font-size:0.68rem;font-weight:600;color:var(--muted);margin-bottom:3px;display:flex;justify-content:space-between}
+    .conf-track{height:6px;background:#f3f4f6;border-radius:10px;overflow:hidden}
+    .cfb{height:100%;border-radius:10px;transition:width 1s ease}
+    .cfb-high{background:linear-gradient(90deg,#16a34a,#4ade80)}
+    .cfb-mid{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+    .cfb-low{background:linear-gradient(90deg,#ef4444,#f87171)}
+
+    .no-data{color:var(--muted);font-size:0.85rem;font-style:italic;text-align:center;padding:2rem;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+    .sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:1.5rem 0}
+    .btn-signout{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;padding:0.7rem 2.2rem;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(180,40,20,0.3);transition:all 0.15s}
+    .btn-signout:hover{transform:translateY(-2px)}
+    .loading-msg{text-align:center;padding:5rem;color:var(--muted);font-size:1rem}
+    .spinner-sm{width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="nav-brand" href="/"><div class="logo-circle">🌾</div><span>FarmAI</span></a>
+  <a class="nav-back" href="/">← Dashboard</a>
+</nav>
+
+<div class="page" id="page-content">
+  <div class="loading-msg">🌱 Loading your profile…</div>
+</div>
+
+<script>
+const GREEN_PAL  = ['#16a34a','#22c55e','#4ade80','#86efac','#bbf7d0','#059669','#10b981','#34d399'];
+const STRESS_COL = ['#16a34a','#f59e0b','#3b82f6','#ef4444','#8b5cf6','#06b6d4','#ec4899','#f97316'];
+const LANG_COL   = ['#2563eb','#16a34a','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#f97316'];
+const LANG_NAMES = {en:'English',hi:'Hindi',te:'Telugu',ta:'Tamil',kn:'Kannada',mr:'Marathi',pa:'Punjabi',gu:'Gujarati',bn:'Bengali'};
+const STRESS_ICO = {NUTRIENT_DEFICIENCY:'🌿',FUNGAL_DISEASE:'🍄',WATER_STRESS:'💧',PEST_INFESTATION:'🐛',VIRAL_DISEASE:'🦠',BACTERIAL_DISEASE:'🧫',HEAT_STRESS:'🌡️',WEED_INFESTATION:'🌱',GENERAL_FARMING:'🌾',INSUFFICIENT_DATA:'❓'};
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function initials(fn,ln){return((fn||'?')[0]+(ln||'?')[0]).toUpperCase();}
+function csrf(){const v=document.cookie.match('(^|;) ?csrftoken=([^;]*)(;|$)');return v?v[2]:'';}
+
+async function loadProfile(){
+  try{
+    const res=await fetch('/auth/profile/data/');
+    if(res.status===401){window.location.href='/auth/login/';return;}
+    const data=await res.json();
+    if(!data.success){window.location.href='/auth/login/';return;}
+    renderProfile(data);
+  }catch(e){
+    document.getElementById('page-content').innerHTML='<div class="no-data">Failed to load profile. <a href="/">Go back</a></div>';
+  }
+}
+
+function renderProfile(data){
+  const u=data.user, st=data.stats;
+  const qs=data.recent_queries||[], sb=data.stress_breakdown||{};
+  const hourly=data.hourly_usage||[], cropDist=data.crop_distribution||[];
+  const langUsage=data.language_usage||[], confDist=data.confidence_dist||[];
+
+  const memberSince=u.created_at?new Date(u.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'—';
+  const lastLogin=u.last_login?new Date(u.last_login).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+
+  // Stats
+  const statsHtml=`
+    <div class="stat-card c1"><div class="stat-ico">📊</div><div class="stat-num">${st.total_queries}</div><div class="stat-lbl">Total Queries</div></div>
+    <div class="stat-card c2"><div class="stat-ico">🗓️</div><div class="stat-num">${st.queries_today}</div><div class="stat-lbl">Today</div></div>
+    <div class="stat-card c3"><div class="stat-ico">📆</div><div class="stat-num">${st.queries_this_week}</div><div class="stat-lbl">This Week</div></div>
+    <div class="stat-card c4"><div class="stat-ico">🌾</div><div class="stat-num">${st.unique_crops}</div><div class="stat-lbl">Crops Analysed</div></div>`;
+
+  // Stress bars — colorful — shown ONCE only
+  const sbEnt=Object.entries(sb).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxV=sbEnt[0]?.[1]||1;
+  const sbHtml=sbEnt.length
+    ?sbEnt.map(([k,v],i)=>`
+      <div class="stress-bar-row">
+        <div class="stress-label">${STRESS_ICO[k]||'⚠️'} ${k.replace(/_/g,' ')}</div>
+        <div class="stress-track"><div class="stress-fill sf${i%6}" style="width:${Math.round(v/maxV*100)}%"></div></div>
+        <div class="stress-count">${v}</div>
+      </div>`).join('')
+    :'<div style="color:var(--muted);font-size:0.85rem">No stress data yet.</div>';
+
+  // Confidence buckets
+  const ranges=['0–20%','20–40%','40–60%','60–80%','80–100%'];
+  const cbHtml=confDist.length
+    ?`<div class="conf-buckets">${confDist.map((c,i)=>`<div class="conf-bucket cb${i}"><div class="cb-range">${c.range||ranges[i]}</div><div class="cb-num">${c.count}</div><div class="cb-lbl">queries</div></div>`).join('')}</div>`
+    :`<div class="conf-buckets">${ranges.map((r,i)=>`<div class="conf-bucket cb${i}"><div class="cb-range">${r}</div><div class="cb-num">—</div><div class="cb-lbl">queries</div></div>`).join('')}</div>`;
+
+  // Query list — ALL VISIBLE AT ONCE (no dropdown)
+  const qsHtml=qs.length
+    ?qs.map((q,idx)=>{
+        const conf=q.confidence_score||0, pct=Math.round(conf*100);
+        const cls=conf>=0.8?'high':conf>=0.4?'mid':'low';
+        const bc=conf>=0.8?'badge-ch':conf>=0.4?'badge-cm':'badge-cl';
+        const dateStr=q.timestamp?new Date(q.timestamp).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+        return `<div class="query-card">
+          <div class="qc-top">
+            <div class="qc-num">${idx+1}</div>
+            <div class="qc-text">${esc(q.original_query||q.query_text||'—')}</div>
+            <div class="qc-date">${dateStr}</div>
+          </div>
+          ${q.original_query&&q.query_text&&q.original_query!==q.query_text?`<div class="qc-translated">🌐 Translated: "${esc(q.query_text)}"</div>`:''}
+          <div class="qc-meta">
+            ${q.detected_stress?`<span class="badge badge-stress">🟢 ${q.detected_stress.replace(/_/g,' ')}</span>`:''}
+            ${q.crop_detected&&q.crop_detected!=='Unknown'?`<span class="badge badge-crop">🌱 ${q.crop_detected}</span>`:''}
+            ${q.input_language&&q.input_language!=='en'?`<span class="badge badge-lang">🌐 ${LANG_NAMES[q.input_language]||q.input_language}</span>`:''}
+            ${pct>0?`<span class="badge ${bc}">🎯 ${pct}% confidence</span>`:''}
+          </div>
+          ${pct>0?`<div class="conf-bar-wrap"><div class="conf-bar-label"><span>AI Confidence</span><span>${pct}%</span></div><div class="conf-track"><div class="cfb cfb-${cls}" style="width:${pct}%"></div></div></div>`:''}
+        </div>`;
+      }).join('')
+    :'<div class="no-data">No queries yet — go to the dashboard and ask your first question!</div>';
+
+  const hasData=st.total_queries>0;
+
+  const analyticsHtml=hasData?`
+    <div class="sec-title purple">🎯 AI Confidence Score Distribution</div>
+    ${cbHtml}
+
+    <!-- Stress analysis — shown ONCE only here -->
+    <div class="sec-title amber">⚠️ Stress Type Analysis</div>
+    <div class="stress-chart">${sbHtml}</div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-title">🍃 Stress Type Breakdown</div>
+        <div class="chart-wrap"><canvas id="c-stress"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🌾 Top Crops Queried</div>
+        <div class="chart-wrap">${cropDist.length?'<canvas id="c-crop"></canvas>':'<div class="chart-empty">No crop data yet</div>'}</div>
+      </div>
+    </div>
+
+    <!-- PEAK HOURS — smooth line chart like image 4 -->
+    <div class="chart-card" style="margin-bottom:1.2rem">
+      <div class="chart-title">⏰ Peak Usage Hours <span style="font-weight:400;color:var(--muted);font-size:0.73rem">(24-hour trend)</span></div>
+      <div class="chart-wrap-tall"><canvas id="c-hours"></canvas></div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-title">🌐 Language Usage</div>
+        <div class="chart-wrap-sm">${langUsage.length?'<canvas id="c-lang"></canvas>':'<div class="chart-empty">No data</div>'}</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📊 Stress Distribution</div>
+        <div class="chart-wrap-sm"><canvas id="c-polar"></canvas></div>
+      </div>
+    </div>
+    <div class="sec-divider"></div>
+  `:`
+    <div class="no-data" style="margin-bottom:1.5rem">Start querying crops to see your analytics!</div>
+    <div class="sec-divider"></div>`;
+
+  document.getElementById('page-content').innerHTML=`
+    <div class="profile-hero">
+      <div class="avatar-ring">${initials(u.first_name,u.last_name)}</div>
+      <div class="profile-info">
+        <h2>${esc(u.first_name)} ${esc(u.last_name)}</h2>
+        <div class="email">${esc(u.email)}</div>
+        <div class="profile-tags">
+          <span class="tag tag-green">🌿 FarmAI Member</span>
+          <span class="tag tag-amber">Since ${memberSince}</span>
+          <span class="tag tag-blue">📊 ${st.total_queries} queries</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-card"><div class="dc-label">Full Name</div><div class="dc-value">${esc(u.first_name)} ${esc(u.last_name)}</div></div>
+      <div class="detail-card"><div class="dc-label">Email Address</div><div class="dc-value">${esc(u.email)}</div></div>
+      <div class="detail-card"><div class="dc-label">Member Since</div><div class="dc-value">${memberSince}</div></div>
+      <div class="detail-card"><div class="dc-label">Last Login</div><div class="dc-value">${lastLogin}</div></div>
+    </div>
+
+    <div class="sec-title green">📊 Usage Summary</div>
+    <div class="stats-row">${statsHtml}</div>
+    <div class="sec-divider"></div>
+
+    ${analyticsHtml}
+
+    <div class="sec-title blue">📋 All Recent Queries</div>
+    <div class="query-list">${qsHtml}</div>
+
+    <div style="text-align:center;margin-top:1.5rem">
+      <button class="btn-signout" id="btn-so" onclick="doSignOut()">🚪 Sign Out</button>
+    </div>`;
+
+  if(hasData) requestAnimationFrame(()=>renderCharts(sb,cropDist,hourly,langUsage));
+}
+
+function renderCharts(sb,cropDist,hourly,langUsage){
+  const font={family:'Plus Jakarta Sans',size:10};
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font,boxWidth:10,padding:8}}}};
+
+  // 1. Stress doughnut
+  const e1=document.getElementById('c-stress');
+  if(e1){
+    const ent=Object.entries(sb).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if(ent.length) new Chart(e1,{
+      type:'doughnut',
+      data:{labels:ent.map(([k])=>k.replace(/_/g,' ')),datasets:[{data:ent.map(([,v])=>v),backgroundColor:STRESS_COL,borderWidth:3,borderColor:'#fff'}]},
+      options:{...base,cutout:'62%',plugins:{legend:{position:'right',labels:{font,boxWidth:10,padding:6}}}}
+    });
+  }
+
+  // 2. Crop bar — each crop a different color
+  const e2=document.getElementById('c-crop');
+  if(e2&&cropDist.length) new Chart(e2,{
+    type:'bar',
+    data:{labels:cropDist.map(c=>c.crop),datasets:[{data:cropDist.map(c=>c.count),backgroundColor:GREEN_PAL.slice(0,cropDist.length),borderRadius:7,borderSkipped:false}]},
+    options:{...base,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font}},y:{grid:{color:'#f0fdf4'},ticks:{font},beginAtZero:true}}}
+  });
+
+  // 3. Peak hours — SMOOTH LINE CHART (matches image 4 exactly)
+  const e3=document.getElementById('c-hours');
+  if(e3){
+    const maxH=Math.max(...hourly.map(h=>h.count),1);
+    const labels=hourly.map(h=>{const hr=h.hour;return hr===0?'12am':hr<12?`${hr}am`:hr===12?'12pm':`${hr-12}pm`;});
+    new Chart(e3,{
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          label:'Queries',
+          data:hourly.map(h=>h.count),
+          borderColor:'#16a34a',
+          backgroundColor:'rgba(22,163,74,0.10)',
+          borderWidth:2.5,
+          fill:true,
+          tension:0.45,
+          pointBackgroundColor:hourly.map(h=>h.count===maxH?'#16a34a':'rgba(22,163,74,0.4)'),
+          pointRadius:hourly.map(h=>h.count===maxH?6:2),
+          pointHoverRadius:7,
+          pointBorderColor:'#fff',
+          pointBorderWidth:2
+        }]
+      },
+      options:{
+        ...base,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{grid:{display:false},ticks:{font,maxRotation:0,maxTicksLimit:13}},
+          y:{grid:{color:'rgba(22,163,74,0.07)'},ticks:{font},beginAtZero:true}
+        }
+      }
+    });
+  }
+
+  // 4. Language doughnut
+  const e4=document.getElementById('c-lang');
+  if(e4&&langUsage.length) new Chart(e4,{
+    type:'doughnut',
+    data:{labels:langUsage.map(l=>LANG_NAMES[l.language]||l.language),datasets:[{data:langUsage.map(l=>l.count),backgroundColor:LANG_COL.slice(0,langUsage.length),borderWidth:3,borderColor:'#fff'}]},
+    options:{...base,cutout:'55%',plugins:{legend:{position:'bottom',labels:{font,boxWidth:10,padding:6}}}}
+  });
+
+  // 5. Polar area — works with ANY number (even 1-2 stress types, no "need 3+" error)
+  const e5=document.getElementById('c-polar');
+  if(e5){
+    const ent=Object.entries(sb).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    if(ent.length) new Chart(e5,{
+      type:'polarArea',
+      data:{
+        labels:ent.map(([k])=>k.replace(/_/g,' ')),
+        datasets:[{data:ent.map(([,v])=>v),backgroundColor:STRESS_COL.map(c=>c+'bb'),borderColor:STRESS_COL,borderWidth:2}]
+      },
+      options:{...base,plugins:{legend:{position:'bottom',labels:{font,boxWidth:10,padding:5}}},scales:{r:{ticks:{backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(0,0,0,0.05)'}}}}
+    });
+  }
+}
+
+async function doSignOut(){
+  const btn=document.getElementById('btn-so');
+  btn.disabled=true;btn.innerHTML='<span class="spinner-sm"></span>Signing out…';
+  try{await fetch('/auth/logout/',{method:'POST',headers:{'X-CSRFToken':csrf()}});}catch(e){}
+  window.location.href='/auth/login/';
+}
+
+loadProfile();
+</script>
+</body>
+</html>

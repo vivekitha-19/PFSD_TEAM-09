@@ -1,0 +1,35 @@
+{
+  "accuracy": 0.7568,
+  "cv_accuracy": 0.7094,
+  "cv_std": 0.0653,
+  "total_samples": 551,
+  "train_samples": 440,
+  "test_samples": 111,
+  "labels": [
+    "bacterial_disease",
+    "fungal_disease",
+    "heat_stress",
+    "nutrient_deficiency",
+    "pest_infestation",
+    "viral_disease",
+    "water_stress",
+    "weed_infestation"
+  ],
+  "model_type": "TF-IDF + LogisticRegression",
+  "features": 5000,
+  "ngram_range": [
+    1,
+    2
+  ],
+  "label_counts": {
+    "fungal_disease": 122,
+    "nutrient_deficiency": 73,
+    "pest_infestation": 69,
+    "water_stress": 63,
+    "heat_stress": 57,
+    "bacterial_disease": 57,
+    "viral_disease": 56,
+    "weed_infestation": 54
+  },
+  "model_path": "ml_model/model.pkl"
+}

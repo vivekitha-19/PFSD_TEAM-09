@@ -1,0 +1,117 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║           FarmAI v5 — COMPLETE SETUP GUIDE FOR PYCHARM              ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — INSTALL PACKAGES (Run in PyCharm Terminal, one line at a time)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+pip install Django==4.2.7
+pip install graphene-django==3.1.5
+pip install "pymongo[srv]==4.6.1"
+pip install dnspython==2.4.2
+pip install certifi==2024.2.2
+pip install nltk==3.8.1
+pip install scikit-learn==1.5.2
+pip install numpy==2.1.3
+pip install pandas==2.2.3
+pip install joblib==1.4.2
+pip install django-cors-headers==4.3.1
+pip install python-dotenv==1.0.0
+pip install whitenoise==6.6.0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — TRAIN THE AI MODEL (Run once before starting server)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+cd ml_model
+python train_model.py
+cd ..
+
+This creates model.pkl from training_data.csv (415 rows).
+You only need to do this ONCE. After that the server uses it automatically.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — START THE SERVER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+python run_server.py
+
+Then open: http://127.0.0.1:8000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MONGODB ATLAS — WHERE TO SEE YOUR DATA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your MongoDB Atlas cluster is ALREADY CONNECTED.
+Connection string is in .env file — no changes needed.
+
+To see your data:
+1. Go to https://cloud.mongodb.com
+2. Login → your cluster → Browse Collections
+3. Database: farmer_advisory_db
+4. Collections:
+   - crops              → 8 crop records
+   - stress_conditions  → 8 stress types
+   - advisory_data      → 8 advisory templates
+   - farmer_queries     → LIVE — every query you submit appears here
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HUGGINGFACE AI — HOW IT WORKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your HuggingFace key is ALREADY SET in .env:
+  HUGGINGFACE_API_KEY=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
+
+The system uses:
+  - facebook/bart-large-mnli → BERT zero-shot classification
+  - mistralai/Mistral-7B-Instruct → advisory generation
+  
+When you submit a query:
+  1. BERT classifies the crop stress type (real AI, not keywords)
+  2. Mistral-7B generates a fresh advisory response
+  3. Response is stored in MongoDB Atlas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPENAI (OPTIONAL — for GPT-4o-mini responses)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If you have an OpenAI key, open .env and replace:
+  OPENAI_API_KEY=sk-placeholder-paste-your-openai-key-here
+with your real key:
+  OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxx
+
+System will auto-use GPT-4o-mini when key is detected.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRAINING DATA — HOW TO MAKE MODEL BETTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The "Retrain AI Model" button in the dashboard does NOT require you
+to manually edit CSV. But if you WANT to add more data:
+
+1. Open:  ml_model/training_data.csv
+2. Add rows in format:  text,label
+   Example:
+     rice plant leaves getting yellow,nutrient_deficiency
+     white powder on wheat leaves,fungal_disease
+3. Click "Retrain AI Model" button on dashboard
+   OR run: cd ml_model && python train_model.py
+
+Labels allowed:
+  nutrient_deficiency, fungal_disease, water_stress,
+  pest_infestation, viral_disease, bacterial_disease,
+  heat_stress, weed_infestation
+
+Current: 415 rows → 66.3% accuracy
+Target:  500+ rows per class → 90%+ accuracy
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ALL URLS AFTER STARTING SERVER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+http://127.0.0.1:8000/           → Main Dashboard
+http://127.0.0.1:8000/graphql/   → GraphQL Explorer
+http://127.0.0.1:8000/health/    → Analytics Dashboard
+http://127.0.0.1:8000/api/model-status/  → AI Model Info (JSON)
+http://127.0.0.1:8000/api/retrain/       → Retrain endpoint (POST)

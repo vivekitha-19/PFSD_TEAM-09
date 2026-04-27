@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MongoDB Analytics – FarmAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --primary:#16a34a;--primary-dark:#14532d;--primary-mid:#166534;
+      --primary-light:#bbf7d0;--accent:#f59e0b;
+      --bg:#f0fdf4;--card:#fff;--border:#d1fae5;
+      --text:#1a2e1a;--muted:#6b7280;--radius:14px;
+      --shadow:0 4px 24px rgba(22,163,74,.10);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+    /* ── Topnav ── */
+    .topnav{background:linear-gradient(180deg,#14532d,#166534 60%,#16a34a);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 18px rgba(0,0,0,.18);position:sticky;top:0;z-index:100}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-brand svg{width:26px;height:26px;fill:#fff}
+    .nav-brand span{font-size:1.15rem;color:#fff;font-weight:800}
+    .nav-right{display:flex;align-items:center;gap:0.7rem}
+    .nav-btn{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);padding:0.38rem 1rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background 0.2s;font-family:'Inter',sans-serif}
+    .nav-btn:hover{background:rgba(255,255,255,0.28)}
+    .nav-btn.refresh{background:rgba(22,163,74,0.5);border-color:rgba(255,255,255,0.3)}
+
+    /* ── Page ── */
+    .page{max-width:1200px;margin:0 auto;padding:1.8rem 1.5rem 4rem}
+
+    /* ── Page Header ── */
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem;flex-wrap:wrap;gap:1rem}
+    .page-header h1{font-size:1.5rem;font-weight:800;color:var(--primary-dark)}
+    .page-header p{font-size:0.82rem;color:var(--muted);margin-top:0.2rem}
+    .badge-mongo{background:linear-gradient(135deg,#16a34a,#059669);color:#fff;font-size:0.72rem;font-weight:700;padding:0.3rem 0.8rem;border-radius:20px;display:inline-flex;align-items:center;gap:5px}
+    .dot-live{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;animation:pdot 1.8s infinite}
+    @keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+    /* ── Search bar ── */
+    .search-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);display:flex;gap:0.7rem;align-items:center}
+    .search-bar input{flex:1;padding:0.6rem 0.9rem;border:1.5px solid var(--border);border-radius:9px;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s}
+    .search-bar input:focus{border-color:var(--primary)}
+    .search-bar button{padding:0.6rem 1.2rem;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:9px;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:transform 0.15s}
+    .search-bar button:hover{transform:translateY(-1px)}
+    .search-lbl{font-size:0.78rem;font-weight:700;color:var(--muted);white-space:nowrap}
+    .search-note{font-size:0.7rem;color:var(--muted);margin-top:0.3rem}
+
+    /* ── Summary cards ── */
+    .summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.9rem;margin-bottom:1.5rem}
+    @media(max-width:900px){.summary-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:560px){.summary-grid{grid-template-columns:repeat(2,1fr)}}
+    .sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;text-align:center;box-shadow:var(--shadow)}
+    .sum-icon{font-size:1.5rem;margin-bottom:0.3rem}
+    .sum-num{font-size:1.9rem;font-weight:800;color:var(--primary);line-height:1}
+    .sum-lbl{font-size:0.7rem;color:var(--muted);font-weight:600;margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.3px}
+    .sum-sub{font-size:0.65rem;color:#6ee7b7;font-weight:600;margin-top:0.15rem}
+
+    /* ── Section title ── */
+    .sec-title{font-size:0.93rem;font-weight:700;color:var(--text);margin-bottom:0.9rem;display:flex;align-items:center;gap:0.5rem}
+    .sec-title::before{content:'';display:inline-block;width:4px;height:18px;background:linear-gradient(180deg,#16a34a,#059669);border-radius:4px}
+    .sec-badge{font-size:0.65rem;background:#dcfce7;color:#15803d;font-weight:700;padding:0.18rem 0.55rem;border-radius:10px;border:1px solid #6ee7b7;margin-left:0.3rem}
+
+    /* ── Charts grid ── */
+    .charts-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+    .charts-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+    @media(max-width:900px){.charts-2,.charts-3{grid-template-columns:1fr}}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;box-shadow:var(--shadow)}
+    .chart-card canvas{max-height:260px}
+
+    /* ── Full width card ── */
+    .full-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+
+    /* ── Time series ── */
+    .ts-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+    .ts-card canvas{max-height:220px}
+
+    /* ── Horizontal bars ── */
+    .hbar-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.55rem}
+    .hbar-label{width:150px;font-size:0.78rem;font-weight:600;color:var(--text);flex-shrink:0;text-transform:capitalize;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .hbar-track{flex:1;height:13px;background:var(--primary-light);border-radius:10px;overflow:hidden}
+    .hbar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#16a34a,#059669);transition:width 1s ease}
+    .hbar-val{width:35px;text-align:right;font-size:0.75rem;font-weight:700;color:var(--primary);flex-shrink:0}
+
+    /* ── User activity table ── */
+    .user-table{width:100%;border-collapse:collapse}
+    .user-table th{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);padding:0.5rem 0.8rem;border-bottom:2px solid var(--border);text-align:left}
+    .user-table td{font-size:0.83rem;padding:0.65rem 0.8rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+    .user-table tr:last-child td{border-bottom:none}
+    .user-table tr:hover td{background:#f9fff9}
+    .conf-pill{display:inline-block;padding:0.15rem 0.5rem;border-radius:10px;font-size:0.72rem;font-weight:700}
+    .conf-high{background:#dcfce7;color:#15803d}
+    .conf-mid{background:#fef3c7;color:#92400e}
+    .conf-low{background:#fee2e2;color:#991b1b}
+
+    /* ── Search results ── */
+    .search-results{display:flex;flex-direction:column;gap:0.6rem;margin-top:0.6rem}
+    .sr-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem}
+    .sr-query{font-size:0.87rem;color:var(--text);font-weight:500}
+    .sr-meta{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.35rem}
+    .sr-badge{font-size:0.68rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:8px}
+    .sr-stress{background:#dcfce7;color:#15803d}
+    .sr-crop{background:#fef3c7;color:#92400e}
+    .sr-score{background:#dbeafe;color:#1d4ed8}
+    .no-results{color:var(--muted);font-size:0.85rem;font-style:italic;padding:1rem 0}
+
+    /* ── Pipeline badge ── */
+    .pipeline-tag{font-size:0.63rem;background:#dbeafe;color:#1e40af;font-weight:700;padding:0.15rem 0.55rem;border-radius:8px;border:1px solid #93c5fd;font-family:monospace}
+
+    /* ── Loading ── */
+    #loading-overlay{position:fixed;inset:0;background:rgba(240,253,244,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500}
+    .ld-spinner{width:48px;height:48px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:1rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .ld-text{font-size:0.9rem;color:var(--primary-dark);font-weight:600}
+
+    .error-banner{background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--radius);padding:1rem 1.2rem;color:#991b1b;font-size:0.87rem;margin-bottom:1rem;display:none}
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading-overlay">
+  <div class="ld-spinner"></div>
+  <div class="ld-text">Running MongoDB Pipelines…</div>
+</div>
+
+<!-- Topnav -->
+<nav class="topnav">
+  <a class="nav-brand" href="/">
+    <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5c-.66 1.1.54 2.3 1.6 1.6C8.31 19.03 14 15 18 9l-1-1zm1.67-3.77c-1.13.41-2.05 1.43-2.47 2.64-.13.36-.18.75-.2 1.13.6-.55 1.36-.97 2.19-1.21.6 0 1.11.4 1.3.95.4 1.2-.28 2.5-1.5 2.88-.35.08-.71.08-1 0-.1 1.35.32 2.72 1.23 3.72C18.73 15.1 20.6 15.5 22 15c0-4.96-1.84-8.5-3.33-10.77z"/></svg>
+    <span>FarmAI</span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-btn" href="/auth/profile/">👤 Profile</a>
+    <a class="nav-btn" href="/">← Dashboard</a>
+    <button class="nav-btn refresh" onclick="loadAll()">⟳ Refresh</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="error-banner" id="err-banner"></div>
+
+  <!-- Header -->
+<!--  <div class="page-header">-->
+<!--    <div>-->
+<!--      <h1>🗄️ MongoDB Analytics</h1>-->
+<!--      <p>Live aggregation pipelines · Atlas Search · $facet · $lookup · Time-Series</p>-->
+<!--    </div>-->
+<!--    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem">-->
+<!--      <div class="badge-mongo"><div class="dot-live"></div> MongoDB Atlas Connected</div>-->
+<!--      <span style="font-size:0.7rem;color:var(&#45;&#45;muted)" id="last-updated">—</span>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <!-- Atlas Search -->
+<!--  <div class="search-bar">-->
+<!--    <span class="search-lbl">🔍 Atlas Search:</span>-->
+<!--    <input type="text" id="search-input" placeholder="Search queries e.g. 'rice yellow leaves', 'fungal', 'drought'…" onkeydown="if(event.key==='Enter')doSearch()"/>-->
+<!--    <button onclick="doSearch()">Search</button>-->
+<!--  </div>-->
+
+  <!-- Summary cards -->
+  <div class="summary-grid" id="summary-grid">
+<!--      $facet $count-->
+    <div class="sum-card"><div class="sum-icon">📊</div><div class="sum-num" id="s-total">—</div><div class="sum-lbl">Total Queries</div><div class="sum-sub"></div></div>
+<!--      $group $count-->
+    <div class="sum-card"><div class="sum-icon">👥</div><div class="sum-num" id="s-farmers">—</div><div class="sum-lbl">Unique Farmers</div><div class="sum-sub"></div></div>
+<!--      $group distinct-->
+    <div class="sum-card"><div class="sum-icon">🌾</div><div class="sum-num" id="s-crops">—</div><div class="sum-lbl">Crop Types</div><div class="sum-sub"></div></div>
+<!--      $group distinct-->
+    <div class="sum-card"><div class="sum-icon">⚠️</div><div class="sum-num" id="s-stresses">—</div><div class="sum-lbl">Stress Types</div><div class="sum-sub"></div></div>
+<!--      $avg $group-->
+    <div class="sum-card"><div class="sum-icon">🎯</div><div class="sum-num" id="s-conf">—%</div><div class="sum-lbl">Avg Confidence</div><div class="sum-sub"></div></div>
+  </div>
+
+  <!-- Time series -->
+  <div class="ts-card">
+<!--      $match $project $group $sort= Time-Series-->
+    <div class="sec-title">Daily Query Trend — Last 30 Days <span class="pipeline-tag"></span> <span class="sec-badge"></span></div>
+    <canvas id="chart-ts"></canvas>
+  </div>
+
+  <!-- Stress + Crop -->
+  <div class="charts-2">
+    <div class="chart-card">
+<!--        $group $sort $project-->
+      <div class="sec-title">Stress Type Distribution <span class="pipeline-tag"></span></div>
+      <canvas id="chart-stress"></canvas>
+    </div>
+    <div class="chart-card">
+<!--        $match $group $limit-->
+      <div class="sec-title">Crop Distribution <span class="pipeline-tag"></span></div>
+      <canvas id="chart-crop"></canvas>
+    </div>
+  </div>
+
+  <!-- Language + Confidence -->
+  <div class="charts-2">
+    <div class="chart-card">
+<!--        $group $sort-->
+      <div class="sec-title">Language Usage <span class="pipeline-tag"></span></div>
+      <canvas id="chart-lang"></canvas>
+    </div>
+    <div class="chart-card">
+<!--        $bucket-->
+      <div class="sec-title">Confidence Score Buckets <span class="pipeline-tag"></span></div>
+      <canvas id="chart-conf"></canvas>
+    </div>
+  </div>
+
+  <!-- Top 5 via $facet -->
+  <div class="full-card">
+<!--      $facet $group $sort $limit-->
+    <div class="sec-title">Top 5 Rankings <span class="pipeline-tag"></span> <span class="sec-badge">Multi-Result in 1 Query</span></div>
+    <div class="charts-3" style="margin-bottom:0">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:0.3px">🌾 Top Crops</div>
+        <div id="top-crops"></div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:0.3px">⚠️ Top Stresses</div>
+        <div id="top-stresses"></div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:0.3px">🤖 AI Sources</div>
+        <div id="top-sources"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User activity with $lookup -->
+  <div class="full-card">
+<!--      $group $lookup $project $sort=Join: queries → users-->
+    <div class="sec-title">Per-User Activity <span class="pipeline-tag"></span> <span class="sec-badge"></span></div>
+    <div style="overflow-x:auto">
+      <table class="user-table" id="user-table">
+        <thead>
+          <tr>
+            <th>Farmer</th>
+            <th>Email / ID</th>
+            <th>Total Queries</th>
+            <th>Crops Used</th>
+            <th>Avg Confidence</th>
+            <th>Last Query</th>
+          </tr>
+        </thead>
+        <tbody id="user-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Search results (hidden until search) -->
+  <div class="full-card" id="search-section" style="display:none">
+    <div class="sec-title">Search Results <span class="pipeline-tag">$search fuzzy</span> <span class="sec-badge" id="search-badge">Atlas Search</span></div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<script>
+const GREEN_PALETTE = [
+  '#16a34a','#059669','#0d9488','#0891b2','#7c3aed',
+  '#db2777','#dc2626','#d97706','#65a30d','#0284c7',
+];
+
+let charts = {};
+
+function destroyChart(id){
+  if(charts[id]){ charts[id].destroy(); delete charts[id]; }
+}
+
+async function loadAll(){
+  document.getElementById('loading-overlay').style.display = 'flex';
+  document.getElementById('err-banner').style.display = 'none';
+  try {
+    const res  = await fetch('/auth/analytics/data/');
+    const data = await res.json();
+    if(!data.success){ showErr(data.error); return; }
+
+    renderSummary(data.summary || {});
+    renderTimeSeries(data.daily_trend || []);
+    renderStressChart(data.stress_breakdown || []);
+    renderCropChart(data.crop_distribution || []);
+    renderLangChart(data.language_distribution || []);
+    renderConfChart(data.confidence_distribution || []);
+    renderTop5(data.top5 || {});
+    renderUserTable(data.user_activity || []);
+
+    document.getElementById('last-updated').textContent =
+      'Updated ' + new Date().toLocaleTimeString('en-IN');
+  } catch(e){
+    showErr('Failed to load analytics: ' + e.message);
+  } finally {
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+}
+
+function showErr(msg){
+  const b = document.getElementById('err-banner');
+  b.textContent = '⚠️ ' + msg;
+  b.style.display = 'block';
+}
+
+// ── Summary ──────────────────────────────────────────────────────────────────
+function renderSummary(s){
+  setText('s-total',   s.total_queries   ?? '—');
+  setText('s-farmers', s.unique_farmers  ?? '—');
+  setText('s-crops',   s.unique_crops    ?? '—');
+  setText('s-stresses',s.unique_stresses ?? '—');
+  setText('s-conf',    (s.avg_confidence ?? '—') + (s.avg_confidence != null ? '%' : ''));
+}
+
+// ── Time Series ───────────────────────────────────────────────────────────────
+function renderTimeSeries(data){
+  destroyChart('ts');
+  if(!data.length){ return; }
+  const ctx = document.getElementById('chart-ts').getContext('2d');
+  charts['ts'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels:   data.map(d => d.date),
+      datasets: [{
+        label: 'Queries per day',
+        data:  data.map(d => d.count),
+        borderColor: '#16a34a',
+        backgroundColor: 'rgba(22,163,74,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#16a34a',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 10 }, maxRotation: 45 } },
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+}
+
+// ── Stress chart ──────────────────────────────────────────────────────────────
+function renderStressChart(data){
+  destroyChart('stress');
+  if(!data.length){ return; }
+  const ctx = document.getElementById('chart-stress').getContext('2d');
+  charts['stress'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels:   data.map(d => (d.stress_type||'Unknown').replace(/_/g,' ')),
+      datasets: [{ data: data.map(d => d.count), backgroundColor: GREEN_PALETTE, borderWidth: 2 }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8 } }
+      }
+    }
+  });
+}
+
+// ── Crop chart ────────────────────────────────────────────────────────────────
+function renderCropChart(data){
+  destroyChart('crop');
+  if(!data.length){ return; }
+  const ctx = document.getElementById('chart-crop').getContext('2d');
+  charts['crop'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels:   data.map(d => d.crop),
+      datasets: [{
+        label: 'Queries',
+        data: data.map(d => d.count),
+        backgroundColor: data.map((_,i) => GREEN_PALETTE[i % GREEN_PALETTE.length]),
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+}
+
+// ── Language chart ────────────────────────────────────────────────────────────
+function renderLangChart(data){
+  destroyChart('lang');
+  if(!data.length){ return; }
+  const ctx = document.getElementById('chart-lang').getContext('2d');
+  charts['lang'] = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels:   data.map(d => (d.language||'en').toUpperCase()),
+      datasets: [{ data: data.map(d => d.count), backgroundColor: GREEN_PALETTE, borderWidth: 2 }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8 } } }
+    }
+  });
+}
+
+// ── Confidence bucket chart ───────────────────────────────────────────────────
+function renderConfChart(data){
+  destroyChart('conf');
+  if(!data.length){ return; }
+  const ctx = document.getElementById('chart-conf').getContext('2d');
+  const colors = ['#dc2626','#f97316','#f59e0b','#84cc16','#16a34a'];
+  charts['conf'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels:   data.map(d => d.range),
+      datasets: [{
+        label: 'Queries',
+        data:  data.map(d => d.count),
+        backgroundColor: colors,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+}
+
+// ── Top 5 horizontal bars ─────────────────────────────────────────────────────
+function renderTop5(top5){
+  renderHBars('top-crops',    top5.top_crops    || []);
+  renderHBars('top-stresses', top5.top_stresses || [], true);
+  renderHBars('top-sources',  top5.top_ai_sources || []);
+}
+
+function renderHBars(elId, items, capitalize=false){
+  const el = document.getElementById(elId);
+  if(!items.length){ el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;font-style:italic">No data yet</div>'; return; }
+  const max = items[0]?.value || 1;
+  el.innerHTML = items.map(item => {
+    const label = capitalize
+      ? (item.label||'').replace(/_/g,' ')
+      : (item.label||'');
+    return `<div class="hbar-row">
+      <div class="hbar-label" title="${esc(label)}">${esc(label)}</div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${Math.round(item.value/max*100)}%"></div></div>
+      <div class="hbar-val">${item.value}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── User activity table ───────────────────────────────────────────────────────
+function renderUserTable(rows){
+  const tbody = document.getElementById('user-tbody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:1.5rem">No user activity data yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const conf    = r.avg_conf || 0;
+    const cls     = conf >= 70 ? 'conf-high' : conf >= 50 ? 'conf-mid' : 'conf-low';
+    const lastQ   = r.last_query ? r.last_query.slice(0,10) : '—';
+    return `<tr>
+      <td><strong>${esc(r.name || r.farmer_id || '—')}</strong></td>
+      <td style="color:var(--muted);font-size:0.78rem">${esc(r.farmer_id || '—')}</td>
+      <td><strong>${r.total || 0}</strong></td>
+      <td>${r.crops_count || 0}</td>
+      <td><span class="conf-pill ${cls}">${conf}%</span></td>
+      <td style="color:var(--muted);font-size:0.78rem">${lastQ}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Atlas Search ──────────────────────────────────────────────────────────────
+async function doSearch(){
+  const q = document.getElementById('search-input').value.trim();
+  if(!q) return;
+  const section = document.getElementById('search-section');
+  section.style.display = 'block';
+  document.getElementById('search-results').innerHTML =
+    '<div class="no-results">Searching…</div>';
+
+  try {
+    const res  = await fetch(`/auth/analytics/data/?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    const results = data.search_results || [];
+
+    document.getElementById('search-badge').textContent =
+      data.search_fallback ? 'Regex Fallback' : 'Atlas Search';
+
+    if(!results.length){
+      document.getElementById('search-results').innerHTML =
+        '<div class="no-results">No results found for "' + esc(q) + '"</div>';
+      return;
+    }
+    document.getElementById('search-results').innerHTML = results.map(r => `
+      <div class="sr-card">
+        <div class="sr-query">${esc(r.original_query || r.query_text || '—')}</div>
+        <div class="sr-meta">
+          ${r.detected_stress ? `<span class="sr-badge sr-stress">⚠️ ${(r.detected_stress||'').replace(/_/g,' ')}</span>` : ''}
+          ${r.crop_detected && r.crop_detected !== 'Unknown' ? `<span class="sr-badge sr-crop">🌾 ${r.crop_detected}</span>` : ''}
+          ${r.score != null ? `<span class="sr-badge sr-score">Score: ${(r.score||0).toFixed(2)}</span>` : ''}
+          <span style="font-size:0.68rem;color:var(--muted)">${(r.timestamp||'').slice(0,10)}</span>
+        </div>
+      </div>`).join('');
+  } catch(e){
+    document.getElementById('search-results').innerHTML =
+      '<div class="no-results">Search failed: ' + e.message + '</div>';
+  }
+}
+
+function setText(id, val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+loadAll();
+</script>
+</body>
+</html>

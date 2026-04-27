@@ -1,0 +1,416 @@
+text,label
+rice leaves turning yellow,nutrient_deficiency
+wheat plant has rust spots,fungal_disease
+cotton leaves eaten by insects,pest_infestation
+tomato plant white powder on leaves,fungal_disease
+maize crop drying due to heat,heat_stress
+rice plant not growing properly,nutrient_deficiency
+leaf curl virus in cotton,viral_disease
+unwanted weeds in field,weed_infestation
+soil too dry crop dying,water_stress
+rice leaves have brown spots,fungal_disease
+wheat crop wilting in summer,water_stress
+cotton bollworm attack,pest_infestation
+tomato early blight disease,fungal_disease
+rice blast disease,fungal_disease
+yellow leaves in paddy,nutrient_deficiency
+sugarcane red rot disease,fungal_disease
+groundnut tikka disease,fungal_disease
+maize stalk rot,fungal_disease
+soybean rust disease,fungal_disease
+tomato mosaic virus,viral_disease
+cotton leaf curl virus,viral_disease
+rice tungro virus,viral_disease
+maize streak virus,viral_disease
+tomato bacterial wilt,bacterial_disease
+rice bacterial blight,bacterial_disease
+wheat karnal bunt,fungal_disease
+paddy sheath blight,fungal_disease
+rice brown planthopper infestation,pest_infestation
+cotton whitefly attack,pest_infestation
+tomato fruit borer worm,pest_infestation
+wheat aphid infestation,pest_infestation
+sugarcane internode borer,pest_infestation
+groundnut caterpillar damage,pest_infestation
+maize corn borer attack,pest_infestation
+soybean pod borer,pest_infestation
+rice field drying up no water,water_stress
+wheat wilting from drought,water_stress
+cotton drooping leaves no rain,water_stress
+tomato plant shriveling,water_stress
+maize leaf rolling drought,water_stress
+sugarcane drying in summer heat,heat_stress
+tomato sunscald damage,heat_stress
+wheat tip burn from hot weather,heat_stress
+rice grain sterility heat damage,heat_stress
+cotton flower drop heat stress,heat_stress
+rice field full of weeds,weed_infestation
+wheat crop competition from grass,weed_infestation
+sugarcane weed problem,weed_infestation
+cotton field overgrown weeds,weed_infestation
+maize wild grass competition,weed_infestation
+paddy nitrogen deficiency yellow leaves,nutrient_deficiency
+wheat phosphorus deficiency poor growth,nutrient_deficiency
+tomato magnesium deficiency yellowing,nutrient_deficiency
+maize zinc deficiency white stripe,nutrient_deficiency
+sugarcane iron chlorosis pale leaves,nutrient_deficiency
+cotton potassium deficiency leaf margin burn,nutrient_deficiency
+soybean sulfur deficiency stunted,nutrient_deficiency
+groundnut calcium deficiency,nutrient_deficiency
+rice water soaked lesions bacterial,bacterial_disease
+wheat soft rot bacterial infection,bacterial_disease
+cotton angular spots bacterial blight,bacterial_disease
+tomato canker bacterial disease,bacterial_disease
+my rice leaves are turning yellow and falling,nutrient_deficiency
+the paddy crop has pale green color,nutrient_deficiency
+leaves of wheat plant look washed out,nutrient_deficiency
+rice plant growth is stunted and slow,nutrient_deficiency
+yellowing between leaf veins maize,nutrient_deficiency
+tomato lower leaves yellow nutrient issue,nutrient_deficiency
+white powdery coating on tomato leaves,fungal_disease
+brown circular spots on rice leaves,fungal_disease
+orange rust on wheat stems,fungal_disease
+black smut on sorghum heads,fungal_disease
+gray mold on tomato fruits,fungal_disease
+downy mildew on cucumbers,fungal_disease
+powdery mildew on wheat,fungal_disease
+blight spots on potato leaves,fungal_disease
+late blight tomato dark brown spots,fungal_disease
+anthracnose on mango fruits,fungal_disease
+holes in cotton leaves from insects,pest_infestation
+caterpillar damage on tomato plants,pest_infestation
+white flies on bottom of tomato leaves,pest_infestation
+thrips damage silver streaks on onion,pest_infestation
+mites webbing on brinjal leaves,pest_infestation
+mealy bug infestation on grapes,pest_infestation
+aphids cluster on wheat new growth,pest_infestation
+scale insects on sugarcane,pest_infestation
+rice stem borer dead heart symptom,pest_infestation
+armyworm damage on maize leaves,pest_infestation
+leaves curling and mosaic pattern on tomato,viral_disease
+ring spots on papaya leaves,viral_disease
+leaf distortion on pepper,viral_disease
+yellow mosaic in soybean,viral_disease
+leaf curl on okra plant,viral_disease
+vein clearing on bean leaves,viral_disease
+streak pattern on maize leaves,viral_disease
+mottled leaves on cucumber,viral_disease
+necrotic spots on groundnut,viral_disease
+enation on pea plant,viral_disease
+crop wilting in afternoon,water_stress
+leaves drooping and limp,water_stress
+brown crispy leaf edges,water_stress
+soil cracked and dry field,water_stress
+stunted growth due to water shortage,water_stress
+plant roots dry and brown,water_stress
+leaves rolling inward drought,water_stress
+stem becoming hollow from dehydration,water_stress
+flowers and fruits dropping water stress,water_stress
+yield loss due to irregular irrigation,water_stress
+scorched leaf margins from hot sun,heat_stress
+bleached pale leaves summer damage,heat_stress
+flowers not setting due to high heat,heat_stress
+pollen sterility temperature stress,heat_stress
+sun scald on fruits,heat_stress
+plant wilting despite adequate water,heat_stress
+rapid drying of leaves in afternoon,heat_stress
+early maturity forced by heat,heat_stress
+crop stunting high temperature damage,heat_stress
+whitish appearance leaves heat bleach,heat_stress
+full of grass in paddy field,weed_infestation
+unwanted plants taking over crop,weed_infestation
+wild grasses competing with wheat,weed_infestation
+parthenium weed spreading in field,weed_infestation
+nutgrass sedge in rice paddy,weed_infestation
+water hyacinth in paddy field,weed_infestation
+dodder parasite on tomato,weed_infestation
+crabgrass in sugarcane,weed_infestation
+lambsquarters in maize crop,weed_infestation
+velvetleaf in soybean field,weed_infestation
+wet rot bacterial infection on ginger,bacterial_disease
+fire blight on apple tree,bacterial_disease
+crown gall bacterial tumor on roots,bacterial_disease
+citrus canker bacterial spots,bacterial_disease
+bacterial soft rot on potato,bacterial_disease
+slime ooze from stem bacterial wilt,bacterial_disease
+water soaked angular spots on cotton,bacterial_disease
+black rot on cabbage bacterial,bacterial_disease
+bacterial brown blotch on bean,bacterial_disease
+rice grain discoloration bacterial,bacterial_disease
+धान के पत्ते पीले हो रहे हैं,nutrient_deficiency
+गेहूं में कीड़े लग गए हैं,pest_infestation
+मेरी धान की फसल खरपतवार से भरी हुई है,weed_infestation
+टमाटर की पत्तियों पर सफेद पाउडर है,fungal_disease
+कपास में बोलवर्म का हमला हो गया है,pest_infestation
+मक्के की फसल धूप से सूख रही है,heat_stress
+गेहूं में जंग के धब्बे हैं,fungal_disease
+फसल में पानी की कमी है,water_stress
+पत्तियां पीली होकर गिर रही हैं,nutrient_deficiency
+चावल में भूरे धब्बे आ गए हैं,fungal_disease
+सब्जियों में कीटों का प्रकोप है,pest_infestation
+गन्ने में लाल सड़न रोग लगा है,fungal_disease
+टमाटर में मोजेक वायरस है,viral_disease
+फसल बहुत धीरे बढ़ रही है पोषण की कमी,nutrient_deficiency
+खेत में अनचाही घास उग आई है,weed_infestation
+पत्तियाँ मुड़ रही हैं और विकृत हो रही हैं,viral_disease
+जीवाणु जनित मुरझाहट कपास में,bacterial_disease
+धान में पत्ती जलाने वाला बैक्टीरिया,bacterial_disease
+गर्मी से फसल को नुकसान हो रहा है,heat_stress
+फसल सूख रही है पानी नहीं है,water_stress
+నా వరి మొక్కలు పసుపు రంగుకు మారుతున్నాయి,nutrient_deficiency
+గోధుమ మొక్కలో తుప్పు మచ్చలు ఉన్నాయి,fungal_disease
+పత్తిలో పురుగుల దాడి జరిగింది,pest_infestation
+నా టమాటా తోటపై తెల్లని పొడి ఉంది,fungal_disease
+మొక్కజొన్న వేడి వల్ల ఎండిపోతోంది,heat_stress
+చేలో కలుపు మొక్కలు పెరిగాయి,weed_infestation
+వరి ఆకులపై గోధుమ రంగు మచ్చలు,fungal_disease
+పంట నీటి కొరతతో వాడిపోతోంది,water_stress
+ఆకులు వంకరలు తిరిగాయి వైరస్,viral_disease
+మొక్కకు పోషకాల లోపం ఉంది,nutrient_deficiency
+నా వరి పొలం కలుపుతో నిండి ఉంది,weed_infestation
+పత్తిలో బాక్టీరియా వ్యాధి ఉంది,bacterial_disease
+paddy leaves showing yellowing and paleness,nutrient_deficiency
+rice stunted growth poor nutrition,nutrient_deficiency
+wheat interveinal chlorosis,nutrient_deficiency
+cotton leaf margin necrosis potassium,nutrient_deficiency
+tomato blossom end rot calcium deficiency,nutrient_deficiency
+maize white stripe zinc deficiency,nutrient_deficiency
+tomato fusarium wilt soil borne,fungal_disease
+rice false smut,fungal_disease
+wheat loose smut,fungal_disease
+cotton wilt fusarium,fungal_disease
+sugarcane red stripe,fungal_disease
+groundnut crown rot,fungal_disease
+tomato leaf minor worm damage,pest_infestation
+rice gall midge damage,pest_infestation
+sugarcane woolly aphid,pest_infestation
+cotton pink bollworm,pest_infestation
+wheat Hessian fly,pest_infestation
+bean thrips,pest_infestation
+chili leaf curl yellow mosaic,viral_disease
+bitter gourd mosaic,viral_disease
+wheat yellow dwarf virus,viral_disease
+brinjal little leaf disease phytoplasma,viral_disease
+sugarcane grassy shoot,viral_disease
+groundnut bud necrosis virus,viral_disease
+tomato bacterial speck,bacterial_disease
+rice bacterial brown stripe,bacterial_disease
+wheat bacterial stripe,bacterial_disease
+potato bacterial ring rot,bacterial_disease
+corn goss wilt bacterial,bacterial_disease
+bean halo blight bacterial,bacterial_disease
+cotton weed parthenium,weed_infestation
+rice barnyard grass weed,weed_infestation
+sugarcane sorghum weed,weed_infestation
+wheat goosefoot weed,weed_infestation
+maize morning glory weed,weed_infestation
+soybean thistle weed competition,weed_infestation
+groundnut drought stress poor yield,water_stress
+rice cracking soil water stress,water_stress
+wheat premature ripening drought,water_stress
+soybean pod filling water stress,water_stress
+cotton lint quality water stress,water_stress
+tomato fruit cracking water stress,water_stress
+wheat forced heading heat,heat_stress
+cotton boll shedding heat,heat_stress
+maize tassel sterility heat,heat_stress
+tomato fruit set failure heat,heat_stress
+soybean flowering failure high temperature,heat_stress
+groundnut empty pods heat,heat_stress
+crop disease unknown spot help,fungal_disease
+my plant is sick with spots,fungal_disease
+something wrong with my rice,nutrient_deficiency
+plant is dying help me,water_stress
+bugs eating my crops,pest_infestation
+yellow color spreading in field,nutrient_deficiency
+brown color spreading on leaves,fungal_disease
+white coating on my vegetables,fungal_disease
+green insects on wheat,pest_infestation
+field overgrown need help,weed_infestation
+मेरी फसल में कुछ दिक्कत है धब्बे हैं,fungal_disease
+पत्तियां मुरझा रही हैं,water_stress
+कीड़े मेरी फसल खा रहे हैं,pest_infestation
+पत्ते पीले पड़ रहे हैं,nutrient_deficiency
+मदद चाहिए फसल सूख रही है,water_stress
+నా పంటకు ఏదో సమస్య ఉంది,fungal_disease
+ఆకులు వాడిపోతున్నాయి,water_stress
+పురుగులు నా పంటను తింటున్నాయి,pest_infestation
+ఆకులు పసుపు పడుతున్నాయి,nutrient_deficiency
+rice second crop yellowing nitrogen,nutrient_deficiency
+paddy second flush stunted,nutrient_deficiency
+paddy leaves pale and narrow,nutrient_deficiency
+wheat tillers not forming,nutrient_deficiency
+cotton squares falling nutrient,nutrient_deficiency
+pests visible on crop leaves,pest_infestation
+crop showing disease symptoms,fungal_disease
+virus symptoms visible crop,viral_disease
+bacterial infection visible in crop,bacterial_disease
+weed control needed in field,weed_infestation
+irrigation failed crop wilting,water_stress
+high temperature damage crop,heat_stress
+paddy field waterlogging,water_stress
+excessive rain crop damage,water_stress
+flooding crop stress,water_stress
+frost damage crop wilting,heat_stress
+cold wave damage crop,heat_stress
+cloudy weather crop not growing,nutrient_deficiency
+rice seedling damping off,fungal_disease
+nursery seedling disease dying,fungal_disease
+transplanted seedlings not recovering,water_stress
+young plants wilting after transplant,water_stress
+seedlings yellowing in nursery,nutrient_deficiency
+new plantation pest attack,pest_infestation
+crop protection advice needed,pest_infestation
+organic farming pest solution,pest_infestation
+integrated pest management crop,pest_infestation
+soil health fertilizer advice,nutrient_deficiency
+soil test recommendation needed,nutrient_deficiency
+crop nutrition management tips,nutrient_deficiency
+irrigation schedule crop,water_stress
+drip irrigation recommendation,water_stress
+sprinkler irrigation advice crop,water_stress
+ग्वार फली में पत्ती धब्बा रोग,fungal_disease
+अरहर में फली बेधक,pest_infestation
+मसूर में जड़ सड़न,fungal_disease
+मूंगफली में टिक्का रोग,fungal_disease
+सोयाबीन में पीला मोजेक वायरस,viral_disease
+बाजरे में डाउनी मिल्डयू,fungal_disease
+ज्वार में तना मक्खी,pest_infestation
+मक्का में झुलसा रोग,fungal_disease
+ईख में पायरिल्ला कीट,pest_infestation
+प्याज में बैंगनी धब्बा,fungal_disease
+మొక్కజొన్నలో కాండం తెగులు,fungal_disease
+వేరుశనగలో తికా వ్యాధి,fungal_disease
+సోయాబీన్ లో పచ్చ తెగులు,viral_disease
+జొన్నలో గింజ తెగులు,fungal_disease
+వరిలో కాండం తొలిచే పురుగు,pest_infestation
+ఉల్లిలో ఊదారంగు మచ్చ,fungal_disease
+పత్తిలో పాలుపురుగు,pest_infestation
+చెరకులో ఎర్ర కుళ్ళు,fungal_disease
+అరటిలో పనామా వ్యాధి,fungal_disease
+మిరపలో వైరస్ లక్షణాలు,viral_disease
+tomato collar rot seedling,fungal_disease
+chilli damping off disease,fungal_disease
+brinjal little leaf yellowing,viral_disease
+okra yellow vein mosaic,viral_disease
+bitter gourd powdery mildew,fungal_disease
+cucumber downy mildew,fungal_disease
+bottle gourd anthracnose,fungal_disease
+pumpkin aphid attack,pest_infestation
+watermelon root rot,fungal_disease
+muskmelon alternaria leaf blight,fungal_disease
+onion thrips damage,pest_infestation
+garlic purple blotch,fungal_disease
+potato late blight disease,fungal_disease
+potato early blight disease,fungal_disease
+tomato spotted wilt,viral_disease
+groundnut leaf spot cercospora,fungal_disease
+sunflower downy mildew,fungal_disease
+mustard aphid attack,pest_infestation
+linseed alternaria blight,fungal_disease
+sesame phyllody disease,viral_disease
+rice tungro orange leaves,viral_disease
+paddy sheath rot fungal,fungal_disease
+wheat yellow rust stripe,fungal_disease
+wheat brown rust leaf,fungal_disease
+barley net blotch,fungal_disease
+oat crown rust,fungal_disease
+sorghum anthracnose stalk,fungal_disease
+pearl millet downy mildew,fungal_disease
+finger millet blast disease,fungal_disease
+chickpea blight disease,fungal_disease
+pigeonpea sterility mosaic,viral_disease
+lentil rust disease,fungal_disease
+fieldpea powdery mildew,fungal_disease
+cowpea mosaic,viral_disease
+blackgram yellow mosaic,viral_disease
+greengram web blight,fungal_disease
+rice sheath blight rhizoctonia,fungal_disease
+rice leaf scald,fungal_disease
+rice stem rot,fungal_disease
+sugarcane smut disease,fungal_disease
+sugarcane mosaic virus,viral_disease
+banana sigatoka disease,fungal_disease
+mango powdery mildew,fungal_disease
+mango anthracnose,fungal_disease
+citrus canker spots,bacterial_disease
+pomegranate bacterial blight,bacterial_disease
+grape downy mildew,fungal_disease
+apple fire blight disease,bacterial_disease
+guava wilt disease,fungal_disease
+papaya ring spot virus,viral_disease
+coconut bud rot,fungal_disease
+arecanut yellow leaf disease,nutrient_deficiency
+coffee berry borer,pest_infestation
+tea blister blight,fungal_disease
+rubber powdery mildew,fungal_disease
+oil palm ganoderma rot,fungal_disease
+cardamom mosaic,viral_disease
+turmeric leaf blotch,fungal_disease
+ginger bacterial wilt,bacterial_disease
+rose black spot disease,fungal_disease
+marigold damping off,fungal_disease
+chrysanthemum rust,fungal_disease
+पत्तियों पर सफेद चूर्ण है,fungal_disease
+तने में छेद हैं,pest_infestation
+फल गिर रहे हैं,water_stress
+जड़ें सड़ रही हैं,fungal_disease
+फूल नहीं आ रहे हैं,nutrient_deficiency
+बीज अंकुरित नहीं हो रहे,water_stress
+मिट्टी बहुत सूखी है,water_stress
+पानी का जमाव है खेत में,water_stress
+खाद की जरूरत है,nutrient_deficiency
+ఆకులపై తెల్లని పొడి ఉంది,fungal_disease
+కాండంలో రంధ్రాలు ఉన్నాయి,pest_infestation
+పళ్ళు రాలిపోతున్నాయి,water_stress
+వేర్లు కుళ్ళిపోతున్నాయి,fungal_disease
+పువ్వులు రావడం లేదు,nutrient_deficiency
+నీళ్ళు లేక పంట ఎండిపోతోంది,water_stress
+మట్టి చాలా పొడిగా ఉంది,water_stress
+field needs fertilizer application,nutrient_deficiency
+poor crop stand thin plants,nutrient_deficiency
+plants not flowering properly,nutrient_deficiency
+grains not filling properly,nutrient_deficiency
+crop lodging falling over wind,water_stress
+stem weak falling lodging,nutrient_deficiency
+roots shallow poor growth,nutrient_deficiency
+plant height less than expected,nutrient_deficiency
+leaves small and pale,nutrient_deficiency
+crop maturity delayed,nutrient_deficiency
+crop scorching in afternoon sun,heat_stress
+maize tassels drying heat wave,heat_stress
+tomato fruit dropping high temperature,heat_stress
+wheat empty grains heat damage,heat_stress
+cotton square shedding heat,heat_stress
+sugarcane burning at tips heat,heat_stress
+groundnut pods not filling heat,heat_stress
+rice sterile panicle heat stress,heat_stress
+soybean pod abortion heat,heat_stress
+onion bolting early heat stress,heat_stress
+pepper blossom drop heat,heat_stress
+brinjal tip burn heat damage,heat_stress
+गर्मी से पत्तियां जल गई हैं,heat_stress
+వేడి వల్ల మొక్కలు మాడిపోతున్నాయి,heat_stress
+dhaan mein kharpat ki samasya,weed_infestation
+gehu ke khet mein anwanted ghaas,weed_infestation
+maize mein wild grass competition,weed_infestation
+cotton field weed problem,weed_infestation
+sugarcane weed overgrowth,weed_infestation
+soybean thistle competition,weed_infestation
+rice field barnyard grass,weed_infestation
+nutgrass sedge infestation paddy,weed_infestation
+களை செடிகள் பயிரை அழிக்கின்றன,weed_infestation
+కలుపు మొక్కలు పంటతో పోటీ పడుతున్నాయి,weed_infestation
+खेत में खरपतवार बहुत हो गई है,weed_infestation
+tomato water soaked spots bacterial,bacterial_disease
+rice grain discoloration bacterial brown,bacterial_disease
+wheat black chaff bacterial,bacterial_disease
+groundnut bacterial wilt,bacterial_disease
+cotton angular leaf spot bacterial,bacterial_disease
+bean halo blight bacterial,bacterial_disease
+potato ring rot bacterial,bacterial_disease
+cabbage black rot bacterial,bacterial_disease
+citrus bacterial canker,bacterial_disease
+ginger soft rot bacterial,bacterial_disease
+बैक्टीरिया से पत्तियां गल रही हैं,bacterial_disease
+బాక్టీరియా వల్ల కాండం కుళ్ళిపోతోంది,bacterial_disease
