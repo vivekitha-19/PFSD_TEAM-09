@@ -25,7 +25,7 @@ from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_API_KEY")
+HF_API_KEY = os.environ.get("HUGGINGFACE_API_KEY")
 OPENAI_KEY  = os.environ.get('OPENAI_API_KEY', '')
 HF_API_BASE = 'https://api-inference.huggingface.co/models'
 
